@@ -120,13 +120,13 @@ const T={
   one:" chanson",many:" chansons",lyrics:"Paroles ↗",empty:"Aucune chanson trouvée. Demande au groupe !",sig:"à toi de chanter !",
   trad:"Traditionnel",jazz:"Standard jazz",
   C:{sing:"Tout le monde chante !",now:"Hits actuels",classic:"Grands classiques",disney:"Disney & Comédies musicales",fr:"Français",it:"Italien",latin:"Latino",arab:"Arabe"},
-  G:{pop:"Pop",rock:"Rock",soul:"Soul",disco:"Disco",funk:"Funk",jazz:"Jazz",dance:"Dance",blues:"Blues",country:"Country",reggae:"Reggae",folk:"Folk",disney:"Disney & Comédies musicales",fr:"Français",it:"Italien",latin:"Latino",arab:"Arabe"}},
+  G:{pop:"Pop",rock:"Rock",soul:"Soul",disco:"Disco",funk:"Funk",jazz:"Jazz",dance:"Dance",blues:"Blues",country:"Country",reggae:"Reggae",folk:"Folk",disney:"Disney",musical:"Comédie musicale",fr:"Français",it:"Italien",latin:"Latino",arab:"Arabe"}},
  en:{intro:"With a real live band. Pick your song, then <b>sign up with the band</b>. Tap a title to see the lyrics.",
   search:"Title or artist…",searchL:"Search for a song",clear:"Clear",byTitle:"By title",byArtist:"By artist",all:"All",
   one:" song",many:" songs",lyrics:"Lyrics ↗",empty:"No song found. Ask the band!",sig:"your turn to sing!",
   trad:"Traditional",jazz:"Jazz standard",
   C:{sing:"Singalong",now:"Today's hits",classic:"All-time classics",disney:"Disney & Musicals",fr:"French",it:"Italian",latin:"Latin",arab:"Arabic"},
-  G:{pop:"Pop",rock:"Rock",soul:"Soul",disco:"Disco",funk:"Funk",jazz:"Jazz",dance:"Dance",blues:"Blues",country:"Country",reggae:"Reggae",folk:"Folk",disney:"Disney & Musicals",fr:"French",it:"Italian",latin:"Latin",arab:"Arabic"}}
+  G:{pop:"Pop",rock:"Rock",soul:"Soul",disco:"Disco",funk:"Funk",jazz:"Jazz",dance:"Dance",blues:"Blues",country:"Country",reggae:"Reggae",folk:"Folk",disney:"Disney",musical:"Musical",fr:"French",it:"Italian",latin:"Latin",arab:"Arabic"}}
 };
 let lang=/^fr/i.test(navigator.language||"")?"fr":"en";
 try{const l=localStorage.getItem("lkp-lang");if(l==="fr"||l==="en")lang=l}catch(e){}
@@ -150,7 +150,7 @@ const S=[
 ["Billie Jean", "Michael Jackson", "pop", "classic", 1],
 ["Birds Of A Feather", "Billie Eilish", "pop", "now", 0],
 ["The Boss", "Diana Ross", "disco", "classic", 0],
-["Breaking Free", "High School Musical", "pop", "now", 0, ["disney"]],
+["Breaking Free", "High School Musical", "musical", "now", 0, ["disney"]],
 ["Build Me Up Buttercup", "The Foundations", "pop", "classic", 1],
 ["Bye Bye Blackbird", "Standard jazz", "jazz", "classic", 0],
 ["Can't Help Falling In Love", "Elvis Presley", "pop", "classic", 0],
@@ -177,7 +177,7 @@ const S=[
 ["Havana", "Camila Cabello", "latin", "latin", 1],
 ["Hey Jude", "The Beatles", "rock", "classic", 1],
 ["Higher Ground", "Stevie Wonder", "funk", "classic", 0],
-["Hopelessly Devoted To You", "Olivia Newton-John", "pop", "classic", 0, ["disney"]],
+["Hopelessly Devoted To You", "Olivia Newton-John", "musical", "classic", 0, ["disney"]],
 ["Hot 'n' Cold", "Katy Perry", "pop", "now", 0],
 ["Hot Stuff", "Donna Summer", "disco", "classic", 0],
 ["Human Nature", "Michael Jackson", "pop", "classic", 0],
@@ -236,7 +236,7 @@ const S=[
 ["So Easy (To Fall In Love)", "Olivia Dean", "soul", "now", 0],
 ["Someone Like You", "Adele", "pop", "now", 1],
 ["Stay", "Rihanna ft. Mikky Ekko", "pop", "now", 0],
-["Summer Nights", "Grease", "pop", "classic", 1, ["disney"]],
+["Summer Nights", "Grease", "musical", "classic", 1, ["disney"]],
 ["Sunny", "Bobby Hebb", "soul", "classic", 0],
 ["Superstition", "Stevie Wonder", "funk", "classic", 0],
 ["Sweet Caroline", "Neil Diamond", "pop", "classic", 1],
@@ -313,7 +313,7 @@ const S=[
 ["Reason To Stay", "Olivia Dean", "soul", "now", 0],
 ["Let Alone The One You Love", "Olivia Dean", "soul", "now", 0],
 ["I've Seen It", "Olivia Dean", "soul", "now", 0],
-["You're The One That I Want", "Grease", "pop", "classic", 0, ["disney"]]
+["You're The One That I Want", "Grease", "musical", "classic", 0, ["disney"]]
 ];
 const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 const key=t=>norm(t).replace(/^\(sittin' on\) /,"").replace(/^the /,"").replace(/[^a-z0-9 &]/g,"").trim();
