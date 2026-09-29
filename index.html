@@ -119,14 +119,14 @@ const T={
   search:"Titre ou artiste…",searchL:"Rechercher une chanson",clear:"Effacer",byTitle:"Par titre",byArtist:"Par artiste",all:"Tout",
   one:" chanson",many:" chansons",lyrics:"Paroles ↗",empty:"Aucune chanson trouvée. Demande au groupe !",sig:"à toi de chanter !",
   trad:"Traditionnel",jazz:"Standard jazz",
-  C:{sing:"Tout le monde chante !",now:"Hits actuels",classic:"Grands classiques",disney:"Disney",fr:"Français",it:"Italien",latin:"Latino",arab:"Arabe"},
-  G:{pop:"Pop",rock:"Rock",soul:"Soul",disco:"Disco",funk:"Funk",jazz:"Jazz",dance:"Dance",blues:"Blues",country:"Country",reggae:"Reggae",folk:"Folk",disney:"Disney",fr:"Français",it:"Italien",latin:"Latino",arab:"Arabe"}},
+  C:{sing:"Tout le monde chante !",now:"Hits actuels",classic:"Grands classiques",disney:"Disney & Comédies musicales",fr:"Français",it:"Italien",latin:"Latino",arab:"Arabe"},
+  G:{pop:"Pop",rock:"Rock",soul:"Soul",disco:"Disco",funk:"Funk",jazz:"Jazz",dance:"Dance",blues:"Blues",country:"Country",reggae:"Reggae",folk:"Folk",disney:"Disney & Comédies musicales",fr:"Français",it:"Italien",latin:"Latino",arab:"Arabe"}},
  en:{intro:"With a real live band. Pick your song, then <b>sign up with the band</b>. Tap a title to see the lyrics.",
   search:"Title or artist…",searchL:"Search for a song",clear:"Clear",byTitle:"By title",byArtist:"By artist",all:"All",
   one:" song",many:" songs",lyrics:"Lyrics ↗",empty:"No song found. Ask the band!",sig:"your turn to sing!",
   trad:"Traditional",jazz:"Jazz standard",
-  C:{sing:"Singalong",now:"Today's hits",classic:"All-time classics",disney:"Disney",fr:"French",it:"Italian",latin:"Latin",arab:"Arabic"},
-  G:{pop:"Pop",rock:"Rock",soul:"Soul",disco:"Disco",funk:"Funk",jazz:"Jazz",dance:"Dance",blues:"Blues",country:"Country",reggae:"Reggae",folk:"Folk",disney:"Disney",fr:"French",it:"Italian",latin:"Latin",arab:"Arabic"}}
+  C:{sing:"Singalong",now:"Today's hits",classic:"All-time classics",disney:"Disney & Musicals",fr:"French",it:"Italian",latin:"Latin",arab:"Arabic"},
+  G:{pop:"Pop",rock:"Rock",soul:"Soul",disco:"Disco",funk:"Funk",jazz:"Jazz",dance:"Dance",blues:"Blues",country:"Country",reggae:"Reggae",folk:"Folk",disney:"Disney & Musicals",fr:"French",it:"Italian",latin:"Latin",arab:"Arabic"}}
 };
 let lang=/^fr/i.test(navigator.language||"")?"fr":"en";
 try{const l=localStorage.getItem("lkp-lang");if(l==="fr"||l==="en")lang=l}catch(e){}
@@ -150,7 +150,7 @@ const S=[
 ["Billie Jean", "Michael Jackson", "pop", "classic", 1],
 ["Birds Of A Feather", "Billie Eilish", "pop", "now", 0],
 ["The Boss", "Diana Ross", "disco", "classic", 0],
-["Breaking Free", "High School Musical", "pop", "now", 0],
+["Breaking Free", "High School Musical", "pop", "now", 0, ["disney"]],
 ["Build Me Up Buttercup", "The Foundations", "pop", "classic", 1],
 ["Bye Bye Blackbird", "Standard jazz", "jazz", "classic", 0],
 ["Can't Help Falling In Love", "Elvis Presley", "pop", "classic", 0],
@@ -177,7 +177,7 @@ const S=[
 ["Havana", "Camila Cabello", "latin", "latin", 1],
 ["Hey Jude", "The Beatles", "rock", "classic", 1],
 ["Higher Ground", "Stevie Wonder", "funk", "classic", 0],
-["Hopelessly Devoted To You", "Olivia Newton-John", "pop", "classic", 0],
+["Hopelessly Devoted To You", "Olivia Newton-John", "pop", "classic", 0, ["disney"]],
 ["Hot 'n' Cold", "Katy Perry", "pop", "now", 0],
 ["Hot Stuff", "Donna Summer", "disco", "classic", 0],
 ["Human Nature", "Michael Jackson", "pop", "classic", 0],
@@ -236,7 +236,7 @@ const S=[
 ["So Easy (To Fall In Love)", "Olivia Dean", "soul", "now", 0],
 ["Someone Like You", "Adele", "pop", "now", 1],
 ["Stay", "Rihanna ft. Mikky Ekko", "pop", "now", 0],
-["Summer Nights", "Grease", "pop", "classic", 1],
+["Summer Nights", "Grease", "pop", "classic", 1, ["disney"]],
 ["Sunny", "Bobby Hebb", "soul", "classic", 0],
 ["Superstition", "Stevie Wonder", "funk", "classic", 0],
 ["Sweet Caroline", "Neil Diamond", "pop", "classic", 1],
@@ -288,72 +288,36 @@ const S=[
 ["Autumn Leaves", "Standard jazz", "jazz", "classic", 0],
 ["Moon River", "Henry Mancini", "jazz", "classic", 0],
 ["Les Feuilles Mortes", "Yves Montand", "fr", "fr", 0],
-["A Dream Is A Wish Your Heart Makes", "Cinderella", "disney", "disney", 0],
-["A Hand Meets A Hand", "Snow White (2025)", "disney", "disney", 0],
-["A Whole New World", "Aladdin", "disney", "disney", 0],
-["All Is Fair", "Snow White (2025)", "disney", "disney", 0],
-["All Is Found", "Frozen 2", "disney", "disney", 0],
-["An Actor's Life For Me", "Pinocchio", "disney", "disney", 0],
-["Bare Necessities", "The Jungle Book", "disney", "disney", 0],
-["Belle", "Beauty and the Beast", "disney", "disney", 0],
-["Be Our Guest", "Beauty and the Beast", "disney", "disney", 0],
-["Be Prepared", "The Lion King", "disney", "disney", 0],
-["Bibbidi-Bobbidi-Boo", "Cinderella", "disney", "disney", 0],
-["Bluddle-Uddle-Um-Dum", "Snow White and the Seven Dwarfs", "disney", "disney", 0],
-["Can You Feel The Love Tonight", "The Lion King", "disney", "disney", 0],
-["Cruella De Vil", "101 Dalmatians", "disney", "disney", 0],
-["Do You Want To Build A Snowman?", "Frozen", "disney", "disney", 0],
-["Everybody Wants To Be A Cat", "The Aristocats", "disney", "disney", 0],
-["For The First Time In Forever", "Frozen", "disney", "disney", 0],
-["Friend Like Me", "Aladdin", "disney", "disney", 0],
-["Give A Little Whistle", "Pinocchio", "disney", "disney", 0],
-["Go The Distance", "Hercules", "disney", "disney", 0],
-["Good Things Grow", "Snow White (2025)", "disney", "disney", 0],
-["Hakuna Matata", "The Lion King", "disney", "disney", 0],
-["Heigh-Ho", "Snow White and the Seven Dwarfs", "disney", "disney", 0],
-["How Far I'll Go", "Moana", "disney", "disney", 0],
-["I Just Can't Wait To Be King", "The Lion King", "disney", "disney", 0],
-["I See The Light", "Tangled", "disney", "disney", 0],
-["I Wan'na Be Like You", "The Jungle Book", "disney", "disney", 0],
-["I Won't Say (I'm In Love)", "Hercules", "disney", "disney", 0],
-["If I Didn't Have You", "Monsters, Inc.", "disney", "disney", 0],
-["I'm Wishing", "Snow White and the Seven Dwarfs", "disney", "disney", 0],
-["In Summer", "Frozen", "disney", "disney", 0],
-["Into The Unknown", "Frozen 2", "disney", "disney", 0],
-["Kiss The Girl", "The Little Mermaid", "disney", "disney", 0],
-["Le Festin", "Ratatouille", "disney", "disney", 0],
-["Let It Go", "Frozen", "disney", "disney", 0],
-["Love Is An Open Door", "Frozen", "disney", "disney", 0],
-["Once Upon A Dream", "Sleeping Beauty", "disney", "disney", 0],
-["One Last Hope", "Hercules", "disney", "disney", 0],
-["One Song", "Snow White and the Seven Dwarfs", "disney", "disney", 0],
-["Part Of Your World", "The Little Mermaid", "disney", "disney", 0],
-["Prince Ali", "Aladdin", "disney", "disney", 0],
-["Princess' Problems", "Snow White (2025)", "disney", "disney", 0],
-["Remember Me", "Coco", "disney", "disney", 0],
-["Show Yourself", "Frozen 2", "disney", "disney", 0],
-["Someday My Prince Will Come", "Snow White and the Seven Dwarfs", "disney", "disney", 0],
-["Tale As Old As Time", "Beauty and the Beast", "disney", "disney", 0],
-["That's What Makes The World Go 'Round", "The Sword in the Stone", "disney", "disney", 0],
-["The Circle Of Life", "The Lion King", "disney", "disney", 0],
-["The Gospel Truth", "Hercules", "disney", "disney", 0],
-["The Phony King Of England", "Robin Hood", "disney", "disney", 0],
-["The Silly Song", "Snow White and the Seven Dwarfs", "disney", "disney", 0],
-["Under The Sea", "The Little Mermaid", "disney", "disney", 0],
-["Waiting On A Wish", "Snow White (2025)", "disney", "disney", 0],
-["When You Wish Upon A Star", "Pinocchio", "disney", "disney", 0],
-["Whistle While You Work", "Snow White and the Seven Dwarfs", "disney", "disney", 0],
-["With A Smile And A Song", "Snow White and the Seven Dwarfs", "disney", "disney", 0],
-["You've Got A Friend In Me", "Toy Story", "disney", "disney", 0],
+["A Whole New World", "Aladdin", "disney", "disney", 0, [], "Ce rêve bleu", "Aladdin"],
+["Bare Necessities", "The Jungle Book", "disney", "disney", 0, [], "Il en faut peu pour être heureux", "Le Livre de la jungle"],
+["Be Our Guest", "Beauty and the Beast", "disney", "disney", 0, [], "C'est la fête", "La Belle et la Bête"],
+["Be Prepared", "The Lion King", "disney", "disney", 0, [], "Soyez prêtes", "Le Roi Lion"],
+["Can You Feel The Love Tonight", "The Lion King", "disney", "disney", 0, [], "L'amour brille sous les étoiles", "Le Roi Lion"],
+["Cruella De Vil", "101 Dalmatians", "disney", "disney", 0, [], "Cruella d'Enfer", "Les 101 Dalmatiens"],
+["Do You Want To Build A Snowman?", "Frozen", "disney", "disney", 0, [], "Je voudrais un bonhomme de neige", "La Reine des neiges"],
+["Friend Like Me", "Aladdin", "disney", "disney", 0, [], "Je suis ton meilleur ami", "Aladdin"],
+["Hakuna Matata", "The Lion King", "disney", "disney", 0, [], "Hakuna Matata", "Le Roi Lion"],
+["How Far I'll Go", "Moana", "disney", "disney", 0, [], "Le bleu lumière", "Vaiana"],
+["I See The Light", "Tangled", "disney", "disney", 0, [], "Je veux y croire", "Raiponce"],
+["I Wan'na Be Like You", "The Jungle Book", "disney", "disney", 0, [], "Être un homme comme vous", "Le Livre de la jungle"],
+["Let It Go", "Frozen", "disney", "disney", 0, [], "Libérée, délivrée", "La Reine des neiges"],
+["Love Is An Open Door", "Frozen", "disney", "disney", 0, [], "L'amour est un cadeau", "La Reine des neiges"],
+["Part Of Your World", "The Little Mermaid", "disney", "disney", 0, [], "Partir là-bas", "La Petite Sirène"],
+["Remember Me", "Coco", "disney", "disney", 0, [], "Ne m'oublie pas", "Coco"],
+["Tale As Old As Time", "Beauty and the Beast", "disney", "disney", 0, [], "Histoire éternelle", "La Belle et la Bête"],
+["The Circle Of Life", "The Lion King", "disney", "disney", 0, [], "L'histoire de la vie", "Le Roi Lion"],
+["Under The Sea", "The Little Mermaid", "disney", "disney", 0, [], "Sous l'océan", "La Petite Sirène"],
+["You've Got A Friend In Me", "Toy Story", "disney", "disney", 0, [], "Je suis ton ami", "Toy Story"],
 ["Baby", "Justin Bieber", "pop", "now", 0],
 ["Dive", "Olivia Dean", "soul", "now", 0],
 ["Reason To Stay", "Olivia Dean", "soul", "now", 0],
 ["Let Alone The One You Love", "Olivia Dean", "soul", "now", 0],
-["I've Seen It", "Olivia Dean", "soul", "now", 0]
+["I've Seen It", "Olivia Dean", "soul", "now", 0],
+["You're The One That I Want", "Grease", "pop", "classic", 0, ["disney"]]
 ];
 const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 const key=t=>norm(t).replace(/^\(sittin' on\) /,"").replace(/^the /,"").replace(/[^a-z0-9 &]/g,"").trim();
-const songs=S.map(([t,a,g,c,sing,x])=>({t,a,g,c,sing,x:x||[],k:key(t),ak:key(a),s:norm(t+" "+a)}));
+const songs=S.map(([t,a,g,c,sing,x,tf,af])=>({t,a,g,c,sing,x:x||[],tf,af,s:norm(t+" "+a+" "+(tf||"")+" "+(af||""))}));
 const cmp=(x,y)=>x.localeCompare(y,"fr");
 
 let genre="all",mode="title";
@@ -376,12 +340,13 @@ q.addEventListener("input",render);
 clear.addEventListener("click",()=>{q.value="";q.focus();render()});
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 const tag=s=>s.g===genre?"":'<span class="tag">'+T[lang].G[s.g]+"</span>";
-const lyr=s=>"https://www.google.com/search?q="+encodeURIComponent(s.t+" "+s.a.replace(/^(Traditionnel|Standard jazz|Grease|High School Musical)$/,m=>m==="Traditionnel"||m==="Standard jazz"?"":m)+" lyrics");
+const lyr=s=>"https://www.google.com/search?q="+encodeURIComponent(s.dt+" "+s.dr.replace(/^(Traditionnel|Standard jazz|Grease|High School Musical)$/,m=>m==="Traditionnel"||m==="Standard jazz"?"":m)+(lang==="fr"&&s.tf?" paroles":" lyrics"));
 const row=(s,inner)=>'<li><a class="row" href="'+lyr(s)+'" target="_blank" rel="noopener">'+inner+'<span class="right">'+tag(s)+'<span class="lyr">'+T[lang].lyrics+'</span></span></a></li>';
 
 document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.l;save("lkp-lang",lang);render()}));
 function render(){
   const L_=T[lang];document.documentElement.lang=lang;
+  for(const s of songs){const fr=lang==="fr"&&s.tf;s.dt=fr?s.tf:s.t;s.dr=fr?s.af:s.a;s.da=artistName(s.dr);s.k=key(s.dt);s.ak=key(s.da)}
   document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===lang));
   document.getElementById("intro").innerHTML=L_.intro;document.getElementById("sig").textContent=L_.sig;
   q.placeholder=L_.search;q.setAttribute("aria-label",L_.searchL);clear.setAttribute("aria-label",L_.clear);
@@ -401,13 +366,13 @@ function render(){
     for(const s of res){
       const c=s.k[0],L=/[0-9]/.test(c)?"#":c.toUpperCase();
       if(L!==cur){if(open)html+="</ul>";html+='<div class="letter">'+L+"</div><ul>";cur=L;open=true}
-      html+=row(s,'<span class="t"><span class="title">'+esc(s.t)+'</span><span class="artist">'+esc(artistName(s.a))+"</span></span>");
+      html+=row(s,'<span class="t"><span class="title">'+esc(s.dt)+'</span><span class="artist">'+esc(s.da)+"</span></span>");
     }
   }else{
     res.sort((x,y)=>cmp(x.ak,y.ak)||cmp(x.k,y.k));
     for(const s of res){
-      if(s.a!==cur){if(open)html+="</ul>";html+='<div class="artisthead">'+esc(artistName(s.a))+"</div><ul>";cur=s.a;open=true}
-      html+=row(s,'<span class="t"><span class="title">'+esc(s.t)+"</span></span>");
+      if(s.da!==cur){if(open)html+="</ul>";html+='<div class="artisthead">'+esc(s.da)+"</div><ul>";cur=s.da;open=true}
+      html+=row(s,'<span class="t"><span class="title">'+esc(s.dt)+"</span></span>");
     }
   }
   list.innerHTML=html+"</ul>";
