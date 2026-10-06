@@ -951,6 +951,11 @@ async function ghPublish(){
   }catch(e){longToast(e&&e.msg||'Could not publish. Check the connection and try again.')}
   publishing=false;updBanner();
 }
+window.lkbLogout=function(){
+  if(EDITOR&&unpublished()&&!confirm('You have changes not published yet. They stay saved on this phone. Log out anyway?'))return;
+  try{stopBeat(true)}catch(e){}
+  try{localStorage.removeItem('lkb-pw')}catch(e){}
+  location.reload()};
 let warnedNewer=false;
 async function pollUpdate(){
   const G=window.LKB_GATE;if(!G||document.visibilityState!=='visible'||publishing)return;
@@ -1024,13 +1029,13 @@ function renderList(){
     ${EDITOR&&view.reorder?`<span class="reorder"><button class="ib" data-mv="${i},-1" aria-label="Move up">${IC.up}</button><button class="ib" data-mv="${i},1" aria-label="Move down">${IC.down}</button></span>`:''}
   </li>`).join('');
   app.innerHTML=`<main class="wrap">
-    <section class="hero"><img src="${LOGO}" alt="Live Karaoke Band"><div class="tagline">Band charts</div></section>
+    <section class="hero">${window.LKB_GATE?`<button class="btn sm white newbtn" onclick="lkbLogout()">Log out</button>`:''}<img src="${LOGO}" alt="Live Karaoke Band"><div class="tagline">${window.LKB_HOST?'Host · editing':'Band charts'}</div></section>
     <div class="listhead"><div><div class="eyebrow">Setlist</div><div class="small" id="lcount">${S.songs.length} songs · highlighted key = transposed</div></div>
       ${EDITOR?`<div class="row"><button class="btn sm" data-act="reorder">${view.reorder?'Done':'Reorder'}</button><button class="btn sm pri" data-act="new">${IC.plus}Add song</button></div>`:''}</div>
     ${view.reorder||!S.songs.length?'':`<div class="search" role="search"><svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg><input id="q" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Search title or artist" aria-label="Search songs" value="${esc(view.q||'')}"><button class="sx" id="qclear" aria-label="Clear search" ${view.q?'':'hidden'}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`}
     <ul class="setlist">${items||'<li class="small">No songs yet.</li>'}</ul>
     <div class="noresult" id="noresult" hidden>No song matches. Try part of the title or the artist.</div>
-    <div class="foot">${EDITOR?'<button class="btn sm" data-act="backup">Backup &amp; import</button>':''}<button class="btn sm" data-act="settings">${IC.gear}Settings</button></div>
+    <div class="foot">${EDITOR?'<button class="btn sm" data-act="backup">Backup &amp; import</button>':''}<button class="btn sm" data-act="settings">${IC.gear}Settings</button>${window.LKB_GATE?'<button class="btn sm" onclick="lkbLogout()">Log out</button>':''}</div>
     <p class="small" style="padding-bottom:30px">${EDITOR?'You can edit this setlist. Your edits stay on this device until you tap “Publish for the band”.':'Tap a song for its chart, lyrics and Spotify link. Key and tempo changes you make stay on your device.'} Acoustic drum samples: web-audio-samples by Chris Wilson.</p>
   </main>`;
   applySearch();
