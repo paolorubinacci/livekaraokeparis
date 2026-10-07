@@ -323,22 +323,26 @@ const songs=S.map(([t,a,g,c,sing,x,tf,af])=>({t,a,g,c,sing,x:x||[],tf,af,s:norm(
 const cmp=(x,y)=>x.localeCompare(y,"fr");
 
 let genre="all",mode="title";
-try{const g=localStorage.getItem("lkp-genre");if(g&&(g==="all"||CATS.includes(g)))genre=g;const m=localStorage.getItem("lkp-mode");if(m==="artist")mode=m}catch(e){}
+try{localStorage.removeItem("lkp-genre");const m=localStorage.getItem("lkp-mode");if(m==="artist")mode=m}catch(e){}
 const save=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 
 const chips=document.getElementById("chips");
 function chip(id,label,n){
   const b=document.createElement("button");b.type="button";b.className="chip";b.dataset.g=id;
   b.dataset.n=n;
-  b.addEventListener("click",()=>{genre=id;save("lkp-genre",id);render()});
+  b.addEventListener("click",()=>{genre=id;render();toTop()});
   chips.appendChild(b);
 }
 chip("all","Tout",songs.length);
 CATS.forEach(id=>chip(id,"",songs.filter(s=>inCat(s,id)).length));
 
-document.querySelectorAll(".sort button").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.m;save("lkp-mode",mode);render()}));
+document.querySelectorAll(".sort button").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.m;save("lkp-mode",mode);render();toTop()}));
 const q=document.getElementById("q"),clear=document.getElementById("clear");
-q.addEventListener("input",render);
+q.value="";q.addEventListener("input",()=>{render();toTop()});
+function toTop(){const bar=document.querySelector(".bar"),list=document.getElementById("list");if(!bar||!list)return;
+ const y=list.getBoundingClientRect().top+window.scrollY-bar.offsetHeight-(parseFloat(getComputedStyle(bar).top)||0);
+ if(window.scrollY>y+1)window.scrollTo({top:Math.max(0,y),behavior:"auto"})}
+window.addEventListener("pageshow",ev=>{if(ev.persisted){genre="all";q.value="";render()}});
 clear.addEventListener("click",()=>{q.value="";q.focus();render()});
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 const tag=s=>s.g===genre?"":'<span class="tag">'+T[lang].G[s.g]+"</span>";
