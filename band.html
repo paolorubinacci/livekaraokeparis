@@ -1031,7 +1031,7 @@ function renderList(){
   app.innerHTML=`<main class="wrap">
     <section class="hero">${window.LKB_GATE?`<button class="btn sm white newbtn" onclick="lkbLogout()">Log out</button>`:''}<img src="${LOGO}" alt="Live Karaoke Band"><div class="tagline">${window.LKB_HOST?'Host · editing':'Band charts'}</div></section>
     <div class="listhead"><div><div class="eyebrow">Setlist</div><div class="small" id="lcount">${S.songs.length} songs · highlighted key = transposed</div></div>
-      ${EDITOR?`<div class="row"><button class="btn sm" data-act="reorder">${view.reorder?'Done':'Reorder'}</button><button class="btn sm pri" data-act="new">${IC.plus}Add song</button></div>`:''}</div>
+      ${EDITOR?`<div class="row"><button class="btn sm" data-act="sortaz" aria-label="Sort songs alphabetically by title">A–Z</button><button class="btn sm" data-act="reorder">${view.reorder?'Done':'Reorder'}</button><button class="btn sm pri" data-act="new">${IC.plus}Add song</button></div>`:''}</div>
     ${view.reorder||!S.songs.length?'':`<div class="search" role="search"><svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg><input id="q" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Search title or artist" aria-label="Search songs" value="${esc(view.q||'')}"><button class="sx" id="qclear" aria-label="Clear search" ${view.q?'':'hidden'}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`}
     <ul class="setlist">${items||'<li class="small">No songs yet.</li>'}</ul>
     <div class="noresult" id="noresult" hidden>No song matches. Try part of the title or the artist.</div>
@@ -1280,6 +1280,7 @@ document.addEventListener('click',e=>{
     case'save-edit':saveEdit();break;
     case'del':if(!view.confirmDel){view.confirmDel=true;renderEdit();break}S.songs=S.songs.filter(x=>x.id!==view.id);save();view={...view,name:'list',id:null,confirmDel:false};render();toast('Song deleted');break;
     case'reorder':view.reorder=!view.reorder;render();break;
+    case'sortaz':{const k=x=>norm(x.title),cmp=(x,y)=>k(x).localeCompare(k(y),'en',{numeric:true})||norm(x.artist).localeCompare(norm(y.artist),'en');const sorted=[...S.songs].sort(cmp);if(sorted.every((x,i)=>x===S.songs[i])){toast('Already in A–Z order');break}if(!confirm('Sort all '+S.songs.length+' songs alphabetically by title? You can still move songs by hand afterwards.'))break;S.songs=sorted;save();render();toast('Sorted A–Z · tap “Publish for the band” to send it');break}
     case'reset-key':s.transpose=0;save();render();break;
     case'toggle-all':{const any=Object.values(view.open).some(Boolean);view.open={};if(!any)parseChart(s.chart).forEach((_,i)=>view.open[i]=true);view.editing=null;render();break}
     case'edit-full':view.editing='full';render();break;
