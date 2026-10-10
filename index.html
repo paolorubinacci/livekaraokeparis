@@ -1,9 +1,4 @@
-<!doctype html>
-<html lang="fr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0e1328">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Live Karaoke Paris</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yellowtail&family=Karla:wght@400;600;700&family=Lexend:wght@600;700&display=swap">
@@ -76,10 +71,7 @@ li .tag{flex:0 0 auto;font-size:11px;letter-spacing:.06em;text-transform:upperca
 .empty{color:var(--muted);padding-block:30px;text-align:center}
 footer{margin-top:32px;color:var(--muted);font-size:14px;text-align:center}
 footer .sig{font-family:var(--script);color:var(--lilac);font-size:1.6rem;display:block;margin-bottom:4px}
-*{box-sizing:border-box}img{max-width:100%}[hidden]{display:none!important}body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 </style>
-</head>
-<body>
 
 <div class="wrap">
   <header>
@@ -181,6 +173,7 @@ const S=[
 ["Hot 'n' Cold", "Katy Perry", "pop", "now", 0],
 ["Hot Stuff", "Donna Summer", "disco", "classic", 0],
 ["Human Nature", "Michael Jackson", "pop", "classic", 0],
+["The Girl Is Mine", "Michael Jackson & Paul McCartney", "pop", "classic", 0],
 ["I Just Called To Say I Love You", "Stevie Wonder", "pop", "classic", 0],
 ["I Just Wanna Make Love To You", "Etta James", "blues", "classic", 0],
 ["I Kissed A Girl", "Katy Perry", "pop", "now", 0],
@@ -288,8 +281,6 @@ const S=[
 ["Autumn Leaves", "Standard jazz", "jazz", "classic", 0],
 ["Moon River", "Henry Mancini", "jazz", "classic", 0],
 ["Les Feuilles Mortes", "Yves Montand", "fr", "fr", 0],
-["Dernière Danse", "Kyo", "fr", "fr", 0],
-["Le Chemin", "Kyo", "fr", "fr", 0],
 ["A Whole New World", "Aladdin", "disney", "disney", 0, [], "Ce rêve bleu", "Aladdin"],
 ["Bare Necessities", "The Jungle Book", "disney", "disney", 0, [], "Il en faut peu pour être heureux", "Le Livre de la jungle"],
 ["Be Our Guest", "Beauty and the Beast", "disney", "disney", 0, [], "C'est la fête", "La Belle et la Bête"],
@@ -298,6 +289,7 @@ const S=[
 ["Cruella De Vil", "101 Dalmatians", "disney", "disney", 0, [], "Cruella d'Enfer", "Les 101 Dalmatiens"],
 ["Do You Want To Build A Snowman?", "Frozen", "disney", "disney", 0, [], "Je voudrais un bonhomme de neige", "La Reine des neiges"],
 ["Friend Like Me", "Aladdin", "disney", "disney", 0, [], "Je suis ton meilleur ami", "Aladdin"],
+["I Won't Say (I'm In Love)", "Hercules", "disney", "disney", 0, [], "I Won't Say (I'm In Love)", "Hercule"],
 ["Hakuna Matata", "The Lion King", "disney", "disney", 0, [], "Hakuna Matata", "Le Roi Lion"],
 ["How Far I'll Go", "Moana", "disney", "disney", 0, [], "Le bleu lumière", "Vaiana"],
 ["I See The Light", "Tangled", "disney", "disney", 0, [], "Je veux y croire", "Raiponce"],
@@ -315,7 +307,34 @@ const S=[
 ["Reason To Stay", "Olivia Dean", "soul", "now", 0],
 ["Let Alone The One You Love", "Olivia Dean", "soul", "now", 0],
 ["I've Seen It", "Olivia Dean", "soul", "now", 0],
-["You're The One That I Want", "Grease", "musical", "classic", 0, ["disney"]]
+["You're The One That I Want", "Grease", "musical", "classic", 0, ["disney"]],
+["September", "Earth, Wind & Fire", "funk", "classic", 1],
+["Happy", "Pharrell Williams", "pop", "now", 1],
+["Don't Stop Me Now", "Queen", "rock", "classic", 1],
+["We Are The Champions", "Queen", "rock", "classic", 1],
+["Crazy Little Thing Called Love", "Queen", "rock", "classic", 1],
+["Bohemian Rhapsody", "Queen", "rock", "classic", 1],
+["I'm Still Standing", "Elton John", "pop", "classic", 1],
+["Don't Go Breaking My Heart", "Elton John & Kiki Dee", "pop", "classic", 1],
+["Proud Mary", "Creedence Clearwater Revival", "rock", "classic", 1],
+["Shape Of You", "Ed Sheeran", "pop", "now", 1],
+["Levitating", "Dua Lipa", "dance", "now", 1],
+["Moves Like Jagger", "Maroon 5", "pop", "now", 1],
+["...Baby One More Time", "Britney Spears", "pop", "classic", 1],
+["Can't Stop The Feeling!", "Justin Timberlake", "pop", "now", 1],
+["Valerie", "Amy Winehouse", "soul", "now", 1],
+["La Vie En Rose", "Édith Piaf", "fr", "fr", 1],
+["La Foule", "Édith Piaf", "fr", "fr", 0],
+["Je L'Aime À Mourir", "Francis Cabrel", "fr", "fr", 1],
+["Dernière Danse", "Indila", "fr", "fr", 1],
+["Dernière Danse", "Kyo", "fr", "fr", 1],
+["Le Chemin", "Kyo ft. Sita", "fr", "fr", 1],
+["L'Italiano", "Toto Cutugno", "it", "it", 1],
+["Mambo Italiano", "Renato Carosone", "it", "it", 0],
+["Tu Vuò Fà L'Americano", "Renato Carosone", "it", "it", 1],
+["Via Con Me", "Paolo Conte", "it", "it", 1],
+["Tanti Auguri", "Raffaella Carrà", "it", "it", 1],
+["Bésame Mucho", "Consuelo Velázquez", "latin", "latin", 0]
 ];
 const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 const key=t=>norm(t).replace(/^\(sittin' on\) /,"").replace(/^the /,"").replace(/[^a-z0-9 &]/g,"").trim();
@@ -323,30 +342,26 @@ const songs=S.map(([t,a,g,c,sing,x,tf,af])=>({t,a,g,c,sing,x:x||[],tf,af,s:norm(
 const cmp=(x,y)=>x.localeCompare(y,"fr");
 
 let genre="all",mode="title";
-try{localStorage.removeItem("lkp-genre");const m=localStorage.getItem("lkp-mode");if(m==="artist")mode=m}catch(e){}
+try{const g=localStorage.getItem("lkp-genre");if(g&&(g==="all"||CATS.includes(g)))genre=g;const m=localStorage.getItem("lkp-mode");if(m==="artist")mode=m}catch(e){}
 const save=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 
 const chips=document.getElementById("chips");
 function chip(id,label,n){
   const b=document.createElement("button");b.type="button";b.className="chip";b.dataset.g=id;
   b.dataset.n=n;
-  b.addEventListener("click",()=>{genre=id;render();toTop()});
+  b.addEventListener("click",()=>{genre=id;save("lkp-genre",id);render()});
   chips.appendChild(b);
 }
 chip("all","Tout",songs.length);
 CATS.forEach(id=>chip(id,"",songs.filter(s=>inCat(s,id)).length));
 
-document.querySelectorAll(".sort button").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.m;save("lkp-mode",mode);render();toTop()}));
+document.querySelectorAll(".sort button").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.m;save("lkp-mode",mode);render()}));
 const q=document.getElementById("q"),clear=document.getElementById("clear");
-q.value="";q.addEventListener("input",()=>{render();toTop()});
-function toTop(){const bar=document.querySelector(".bar"),list=document.getElementById("list");if(!bar||!list)return;
- const y=list.getBoundingClientRect().top+window.scrollY-bar.offsetHeight-(parseFloat(getComputedStyle(bar).top)||0);
- if(window.scrollY>y+1)window.scrollTo({top:Math.max(0,y),behavior:"auto"})}
-window.addEventListener("pageshow",ev=>{if(ev.persisted){genre="all";q.value="";render()}});
+q.addEventListener("input",render);
 clear.addEventListener("click",()=>{q.value="";q.focus();render()});
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 const tag=s=>s.g===genre?"":'<span class="tag">'+T[lang].G[s.g]+"</span>";
-const lyr=s=>"https://www.google.com/search?q="+encodeURIComponent(s.dt+" "+s.dr.replace(/^(Traditionnel|Standard jazz|Grease|High School Musical)$/,m=>m==="Traditionnel"||m==="Standard jazz"?"":m)+(lang==="fr"&&s.tf?" paroles":" lyrics"));
+const lyr=s=>"https://www.google.com/search?q="+encodeURIComponent(s.dt+" "+s.dr.replace(/^(Traditionnel|Standard jazz|Grease|High School Musical)$/,m=>m==="Traditionnel"?"":m==="Standard jazz"?"jazz standard":m)+(lang==="fr"&&s.tf?" paroles":" lyrics"));
 const row=(s,inner)=>'<li><a class="row" href="'+lyr(s)+'" target="_blank" rel="noopener">'+inner+'<span class="right">'+tag(s)+'<span class="lyr">'+T[lang].lyrics+'</span></span></a></li>';
 
 document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.l;save("lkp-lang",lang);render()}));
@@ -386,5 +401,4 @@ function render(){
 render();
 </script>
 
-</body>
-</html>
+</body></html>
