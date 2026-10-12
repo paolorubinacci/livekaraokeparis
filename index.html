@@ -357,13 +357,22 @@ const chips=document.getElementById("chips");
 function chip(id,label,n){
   const b=document.createElement("button");b.type="button";b.className="chip";b.dataset.g=id;
   b.dataset.n=n;
-  b.addEventListener("click",()=>{genre=id;save("lkp-genre",id);render()});
+  b.addEventListener("click",()=>{genre=id;save("lkp-genre",id);render();toList(b)});
   chips.appendChild(b);
 }
 chip("all","Tout",songs.length);
 CATS.forEach(id=>chip(id,"",songs.filter(s=>inCat(s,id)).length));
 
-document.querySelectorAll(".sort button").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.m;save("lkp-mode",mode);render()}));
+/* after picking a category or a sort order, bring the start of the list back up under the search bar (only if the page was scrolled further down), and keep the tapped chip in view */
+function toList(chipEl){
+  const bar=document.querySelector(".bar"), c=document.querySelector(".count");
+  if(chipEl&&chipEl.scrollIntoView) try{chipEl.scrollIntoView({block:"nearest",inline:"center",behavior:"smooth"})}catch(e){}
+  if(!bar||!c) return;
+  const y=c.getBoundingClientRect().top+scrollY-bar.offsetHeight-env0()-4;
+  if(scrollY>y+2) scrollTo({top:Math.max(0,y),behavior:"smooth"});
+}
+function env0(){const t=document.createElement("div");t.style.cssText="position:fixed;top:env(safe-area-inset-top,0px)";document.body.appendChild(t);const v=t.getBoundingClientRect().top;t.remove();return v}
+document.querySelectorAll(".sort button").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.m;save("lkp-mode",mode);render();toList()}));
 const q=document.getElementById("q"),clear=document.getElementById("clear");
 q.addEventListener("input",render);
 clear.addEventListener("click",()=>{q.value="";q.focus();render()});
