@@ -16,6 +16,7 @@
   --muted:#a6a9c8;      /* artist names */
   --lilac:#c4b5fd;      /* logo lavender, accent */
   --violet:#a78bfa;     /* genre tags */
+  --spot:#ffbf73;       /* site amber, used sparingly here */
   --line:rgba(243,240,251,.09);
   --head:"Lexend","Arial Black",system-ui,sans-serif;
   --script:"Yellowtail","Brush Script MT",cursive;
@@ -58,7 +59,8 @@ header{position:relative;padding-block:44px 18px;display:flex;flex-direction:col
 .chip:focus-visible,#clear:focus-visible,.sort button:focus-visible{outline:2px solid var(--lilac);outline-offset:2px}
 
 .count{color:var(--muted);font-size:13px;margin:14px 0 4px;font-variant-numeric:tabular-nums}
-.letter{font-family:var(--head);font-weight:700;color:var(--lilac);font-size:1.15rem;padding-block:18px 4px;border-bottom:2px solid var(--lilac);width:1.6em}
+.count::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--spot);margin-right:9px;vertical-align:.08em;box-shadow:0 0 10px rgba(255,191,115,.7)}
+.letter{font-family:var(--head);font-weight:700;color:var(--lilac);font-size:1.15rem;padding-block:18px 4px;border-bottom:2px solid var(--spot);width:1.6em}
 .artisthead{font-family:var(--head);font-weight:600;color:var(--lilac);font-size:1.05rem;padding-block:18px 2px}
 ul{list-style:none;margin:0;padding:0}
 li{padding-block:11px;border-bottom:1px solid var(--line)}
@@ -74,7 +76,7 @@ li .tag{flex:0 0 auto;font-size:11px;letter-spacing:.06em;text-transform:upperca
 .byartist li{padding-block:9px}
 .empty{color:var(--muted);padding-block:30px;text-align:center}
 footer{margin-top:32px;color:var(--muted);font-size:14px;text-align:center}
-footer .sig{font-family:var(--script);color:var(--lilac);font-size:1.6rem;display:block;margin-bottom:4px}
+footer .sig{font-family:var(--script);color:var(--spot);font-size:1.6rem;display:block;margin-bottom:4px}
 </style>
 
 <div class="wrap">
