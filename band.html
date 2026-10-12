@@ -1603,6 +1603,28 @@ function stopAudio(){}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&P.playing&&navigator.wakeLock)navigator.wakeLock.request('screen').then(w=>P.wake=w).catch(()=>{})});
 
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset&&e.target.dataset.bar){e.preventDefault();e.target.click()}});
+/* browser Back button / swipe-back: an open song is one step in the browser history, so going back returns to the setlist (where you were in it) instead of leaving the page */
+let listY=0;
+try{history.scrollRestoration='manual'}catch(e){}
+document.addEventListener('click',e=>{if(view.name==='list'&&e.target.closest&&e.target.closest('[data-open]'))listY=window.scrollY},true);
+const renderBase=render;
+render=function(){
+  renderBase.apply(this,arguments);
+  try{const want=view.name==='list'?0:1,have=(history.state&&history.state.lkb)||0;
+    if(want>have)history.pushState({lkb:1},'');
+    else if(want<have)history.back();
+  }catch(e){}
+};
+window.addEventListener('popstate',()=>{
+  try{
+    if(view.name==='list')return;
+    if(view.sheet){view.sheet=null;history.pushState({lkb:1},'');render();return}
+    if(view.name==='edit'){history.pushState({lkb:1},'');toast('Tap Save or Cancel to leave the editor');return}
+    stopBeat();stopAudio();view={...view,name:'list',id:null};render();
+    const y=listY;window.scrollTo(0,y);requestAnimationFrame(()=>window.scrollTo(0,y));setTimeout(()=>window.scrollTo(0,y),60);
+  }catch(e){}
+});
+
 render();
 detectEditor();
 </script>
