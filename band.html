@@ -250,6 +250,7 @@ a{color:inherit}
 .fld textarea.code{font-family:var(--f-mono);font-size:14px;min-height:280px;white-space:pre;overflow-x:auto}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
 .help{font-size:14px;color:var(--muted);background:var(--surface2);border-radius:12px;padding:10px 12px;line-height:1.55}
+.impbox{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1.5px dashed var(--line);border-radius:14px;background:var(--surface2)}.impbox .it{display:flex;flex-direction:column;gap:2px;min-width:0}.impbox .it b{font-family:var(--f-head);font-size:15px}.impbox .it span{font-size:13px;color:var(--muted);line-height:1.4}.impbox .btn{flex:none;cursor:pointer}.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none}
 .help code{font-family:var(--f-mono);font-size:12.5px;color:var(--fg)}
 .err{color:var(--danger);font-size:14px}
 .toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--deep);padding:9px 18px;border-radius:999px;font-weight:700;font-size:14px;z-index:60;box-shadow:0 4px 18px rgba(0,0,0,.35);white-space:nowrap}
@@ -554,6 +555,7 @@ a{color:inherit}
 .fld textarea.code{font-family:var(--f-mono);font-size:14px;min-height:280px;white-space:pre;overflow-x:auto}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
 .help{font-size:14px;color:var(--muted);background:var(--surface2);border-radius:12px;padding:10px 12px;line-height:1.55}
+.impbox{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1.5px dashed var(--line);border-radius:14px;background:var(--surface2)}.impbox .it{display:flex;flex-direction:column;gap:2px;min-width:0}.impbox .it b{font-family:var(--f-head);font-size:15px}.impbox .it span{font-size:13px;color:var(--muted);line-height:1.4}.impbox .btn{flex:none;cursor:pointer}.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none}
 .help code{font-family:var(--f-mono);font-size:12.5px;color:var(--fg)}
 .err{color:var(--danger);font-size:14px}
 .toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--deep);padding:9px 18px;border-radius:999px;font-weight:700;font-size:14px;z-index:60;box-shadow:0 4px 18px rgba(0,0,0,.35);white-space:nowrap}
@@ -1208,6 +1210,7 @@ function renderEdit(){
   app.innerHTML=`<header class="top"><div class="wrap"><button class="ib" data-act="cancel-edit" aria-label="Cancel">${IC.back}</button>
     <div class="ttl"><div class="t">${isNew?'New song':'Edit song'}</div></div><button class="btn pri" data-act="save-edit">Save</button></div></header>
   <main class="wrap"><div class="form">
+    <div class="impbox"><div class="it"><b>Import from iReal Pro</b><span>In iReal Pro: Share → iReal Pro (or MusicXML) → Save to Files. Then choose the file here.</span></div><label class="btn" for="e-file">Choose file</label><input id="e-file" type="file" class="vh"></div>
     <div class="fld"><label for="e-t">Title</label><input id="e-t" value="${esc(s.title)}" autocomplete="off"></div>
     <div class="fld"><label for="e-a">Artist</label><input id="e-a" value="${esc(s.artist||'')}" autocomplete="off"></div>
     <div class="grid2">
@@ -1259,6 +1262,213 @@ function renderSheet(){
   document.body.insertAdjacentHTML('beforeend',`<div class="scrim" data-act="close-sheet"></div><div class="sheet" role="dialog" aria-modal="true"><div class="wrap">${h}<button class="btn" data-act="close-sheet" style="align-self:flex-start">Close</button></div></div>`);
 }
 function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),1700)}
+
+/* ============ import: iReal Pro (irealb://) and MusicXML ============
+   Turns a file exported from iReal Pro (Share > iReal Pro, an .html file holding an irealb:// link,
+   or Share > MusicXML) into songs in this app's chart format. The irealb string is unscrambled
+   following the format notes published with pianosnake/ireal-reader (MIT). */
+const IR_GROOVE=[[/bossa|samba|latin|brazil/i,'bossa'],[/waltz/i,'waltz'],[/ballad/i,'ballad'],[/funk/i,'funk'],[/disco|dance|house/i,'disco'],[/reggaeton|dembow|kuduro/i,'dembow'],[/shuffle|swing|blues|bebop|gospel|jazz|bop/i,'shuffle'],[/rock/i,'rock'],[/pop|rnb|soul/i,'pop']];
+function irGroove(style,ts){if(ts==='34')return'waltz';if(ts==='68'||ts==='128')return'six8';for(const[re,g]of IR_GROOVE)if(re.test(style||''))return g;return'pop'}
+function irKey(k){const m=/^([A-G])([#b]?)(-?)/.exec(String(k||'').trim());if(!m)return'C';return keyName(noteIdx(m[1],m[2]),!!m[3])}
+function irTitle(t){return String(t||'').trim().replace(/^(.*), (A|The)$/,'$2 $1')}
+function irComposer(c){c=String(c||'').trim();const p=c.split(/\s+/);return p.length===2?p[1]+' '+p[0]:c}
+function irUnscramble(s){
+  const sw=p=>{const a=p.split('');for(let i=0;i<5;i++){a[49-i]=p[i];a[i]=p[49-i]}for(let i=10;i<24;i++){a[49-i]=p[i];a[i]=p[49-i]}return a.join('')};
+  let r='';while(s.length>51){r+=sw(s.slice(0,50));s=s.slice(50)}r+=s;
+  return r.replace(/Kcl/g,'| x').replace(/LZ/g,' |').replace(/XyQ/g,'   ');
+}
+function irQual(m){
+  let q=String(m||'');
+  if(/^-\^/.test(q)){const r=q.slice(2);return'mmaj'+(r===''||r==='7'?'7':r)}
+  if(q[0]==='-')q='m'+q.slice(1);
+  else if(q[0]==='^'){const r=q.slice(1);q='maj'+(r===''?'7':r)}
+  else if(q[0]==='h'){const r=q.slice(1);q=r===''||r==='7'?'m7b5':'m'+r+'b5'}
+  else if(q[0]==='o'){const r=q.slice(1);q='dim'+(r==='^7'||r==='^'?'maj7':r)}
+  return q.replace(/\^7?/g,'maj7');
+}
+/* songs -> chart text */
+function irChart(secs){
+  const out=[];
+  secs.forEach(sc=>{
+    if(!sc.bars.length&&!sc.notes.length)return;
+    out.push('['+(sc.label||'PART')+(sc.rep>1?' x'+sc.rep:'')+']');
+    if(sc.notes.length)out.push('! '+sc.notes.join(' · '));
+    for(let i=0;i<sc.bars.length;i+=4)out.push('| '+sc.bars.slice(i,i+4).map(b=>(b.e?b.e+'.':'')+b.c.join(' ')).join(' | ')+' |');
+  });
+  return out.join('\n');
+}
+const IR_SEC={i:'INTRO',I:'INTRO',v:'VERSE',V:'VERSE'};
+function irMusic(raw,plain){
+  const t=plain?raw:irUnscramble(raw);
+  const secs=[];let prevCh=null,sec=null,bar=null,open=false,ending=0,inRep=false,swallow=false,last=null,ts='44',firstTs='';
+  const newSec=lab=>{sec={label:lab,rep:1,bars:[],notes:[]};secs.push(sec)};
+  const ensure=()=>{if(!sec)newSec('')};
+  const close=()=>{
+    if(bar&&(bar.c.length||(open&&bar.sp))){
+      ensure();let c=bar.c;
+      if(!c.length)c=['-'];
+      if(c.length>1)c=c.map(x=>x==='%'?(prevCh||x):x).filter(x=>x!=='%%');
+      for(const x of c)if(/^[A-G]/.test(x))prevCh=x;
+      if(swallow&&c.length===1&&c[0]==='-'){swallow=false}
+      else{swallow=c.length===1&&c[0]==='%%';sec.bars.push({c:c.slice(0,4),e:ending})}
+    }
+    bar={c:[],sp:0};
+  };
+  bar={c:[],sp:0};
+  const CH=/^([A-G][b#]?)((?:sus|alt|add|[+\-^\dhob#])*)(\*[^*]*\*)?(\/[A-G][#b]?)?(\([^)]*\))?/;
+  let i=0;
+  while(i<t.length){
+    const r=t.slice(i);let m;
+    if((m=/^\*([a-zA-Z])/.exec(r))){
+      close();const lab=IR_SEC[m[1]]||m[1].toUpperCase();
+      if(sec&&!sec.bars.length){sec.label=lab}else newSec(lab);
+      ending=0;i+=2;continue}
+    if((m=/^T(\d\d)/.exec(r))){ts=m[1];if(!firstTs)firstTs=ts;i+=3;continue}
+    if((m=/^N(\d)/.exec(r))){ending=+m[1]>2?0:+m[1];if(sec&&ending)sec.rep=Math.max(sec.rep,2);i+=2;continue}
+    if((m=/^<([^>]*)>/.exec(r))){const c=m[1].trim();ensure();
+      const x=/(\d+)\s*x\b|\bx\s*(\d+)/i.exec(c);if(x&&c.length<12)sec.rep=Math.max(sec.rep,+(x[1]||x[2]));else if(c)sec.notes.push(c);
+      i+=m[0].length;continue}
+    if((m=CH.exec(r))){
+      let ch=m[1]+irQual(m[2])+(m[4]||'');last=m[1]+irQual(m[2]);bar.c.push(ch);i+=m[0].length;continue}
+    if((m=/^W(\/[A-G][#b]?)?(\([^)]*\))?/.exec(r))){if(m[1]&&last)bar.c.push(last+m[1]);i+=m[0].length;continue}
+    const c=t[i];
+    if(c==='x'){bar.c.push('%')}
+    else if(c==='r'){bar.c.push('%%')}
+    else if(c==='n'){bar.c.push('N.C.')}
+    else if(c===' '){bar.sp++}
+    else if(c==='|'){close();open=true}
+    else if(c==='['||c==='{'){
+      close();open=true;
+      if(c==='{'){ensure();if(sec.bars.length){newSec(sec.label)}inRep=sec}
+    }
+    else if(c===']'||c==='}'||c==='Z'){
+      close();open=false;
+      if(c==='}'){if(!inRep||inRep===sec)sec.rep=Math.max(sec.rep,2);inRep=false;if(ending!==1)ending=0}
+      else{ending=0;if(c===']'||c==='Z'){/* a section that went on after its repeat closes here */}}
+    }
+    else if(c==='Q'){ensure();if(!sec.bars.length)sec.label='CODA'}
+    i++;
+    /* after a closing repeat with no second ending coming, further bars belong to a new block */
+    if(c==='}'){const rest=t.slice(i).replace(/^[\sY,]+/,'');if(!/^(N2|\[?\s*N2|\|?\s*N2)/.test(rest)&&!/^\*/.test(rest)&&/^[|\[{A-GWnxr]/.test(rest)){newSec(sec.label)}}
+  }
+  close();
+  return{secs:secs.filter(s=>s.bars.length||s.notes.length),ts:firstTs||ts};
+}
+function irSong(part,old){
+  const p=part.split('=');
+  let title,composer,style,key,music,bpm=0;
+  if(old){[title,composer,style,key]=p;music=p[5]||'';}
+  else{title=p[0];composer=p[1];style=p[3];key=p[4];const mm=(p[6]||'').split('1r34LbKcu7');music=mm[1]||mm[0]||'';bpm=+p[8]||0}
+  const r=old?irMusicPlain(music):irMusic(music);
+  const notes=[];if(r.ts&&r.ts!=='44')notes.push('Time signature '+(r.ts==='12'?'12/8':r.ts[0]+'/'+r.ts[1])+'.');
+  if(style)notes.push('iReal Pro style: '+style.trim()+'.');
+  return{title:irTitle(title),artist:irComposer(composer),key:irKey(key),bpm:Math.max(30,Math.min(260,bpm||100)),groove:irGroove(style,r.ts),chart:irChart(r.secs),notes:notes.join(' ')};
+}
+function irMusicPlain(m){return irMusic(m,true)}
+function parseIreal(text){
+  const m=/(irealb(?:ook)?):\/\/([^"<>\s]+)/.exec(text);if(!m)return null;
+  let dec;try{dec=decodeURIComponent(m[2])}catch(e){dec=m[2]}
+  const parts=dec.split('===');if(parts.length>1&&!/=/.test(parts[parts.length-1]))parts.pop();
+  return parts.filter(x=>x.trim()).map(x=>{try{return irSong(x,m[1]==='irealbook')}catch(e){return null}}).filter(s=>s&&s.chart);
+}
+/* ---- MusicXML ---- */
+const MX_KIND={major:'',minor:'m',augmented:'+',diminished:'dim',dominant:'7','major-seventh':'maj7','minor-seventh':'m7','diminished-seventh':'dim7','augmented-seventh':'+7','half-diminished':'m7b5','major-minor':'mmaj7','major-sixth':'6','minor-sixth':'m6','dominant-ninth':'9','major-ninth':'maj9','minor-ninth':'m9','dominant-11th':'11','major-11th':'maj11','minor-11th':'m11','dominant-13th':'13','major-13th':'maj13','minor-13th':'m13','suspended-second':'sus2','suspended-fourth':'sus4',power:'5',pedal:'',other:''};
+const MX_MAJ=['Cb','Gb','Db','Ab','Eb','Bb','F','C','G','D','A','E','B','F#','C#'],MX_MIN=['Ab','Eb','Bb','F','C','G','D','A','E','B','F#','C#','G#','D#','A#'];
+function mxNote(step,alter){return step+(alter>0?'#':alter<0?'b':'')}
+function parseMusicXML(xml){
+  const doc=new DOMParser().parseFromString(xml,'application/xml');
+  const q=(el,s)=>el.getElementsByTagName(s)[0],tx=(el,s)=>{const e=el&&q(el,s);return e?e.textContent.trim():''};
+  const part=q(doc,'part');if(!part)return null;
+  const title=tx(doc,'work-title')||tx(doc,'movement-title');
+  let artist='';for(const c of doc.getElementsByTagName('creator'))if(!artist||c.getAttribute('type')==='composer')artist=c.textContent.trim();
+  let key='C',bpm=0,ts='44';
+  const secs=[];let sec=null,ending=0;const newSec=l=>{sec={label:l,rep:1,bars:[],notes:[]};secs.push(sec)};
+  let first=true,prevMx=null;
+  for(const ms of part.getElementsByTagName('measure')){
+    if(first){const f=q(ms,'fifths');if(f){const n=+f.textContent,mode=tx(ms,'mode');key=irKey((mode==='minor'?MX_MIN:MX_MAJ)[n+7]+(mode==='minor'?'-':''))}
+      const b=tx(ms,'beats'),bt=tx(ms,'beat-type');if(b&&bt)ts=b+bt;first=false}
+    const snd=q(ms,'sound');if(snd&&snd.getAttribute('tempo')&&!bpm)bpm=Math.round(+snd.getAttribute('tempo'));
+    const reh=q(ms,'rehearsal');
+    let fwd=false,bwd=false,endNum=0,endStop=false;
+    for(const bl of ms.getElementsByTagName('barline')){const rp=q(bl,'repeat');if(rp){if(rp.getAttribute('direction')==='forward')fwd=true;else bwd=true}
+      const en=q(bl,'ending');if(en){const t=en.getAttribute('type');if(t==='start')endNum=parseInt(en.getAttribute('number'))||0;else endStop=true}}
+    if(reh){const l=reh.textContent.trim();newSec(IR_SEC[l]||l.toUpperCase());ending=0}
+    else if(!sec)newSec('');
+    if(fwd&&sec.bars.length)newSec(sec.label);
+    if(fwd)sec.rep=Math.max(sec.rep,2);
+    if(endNum){ending=endNum>2?0:endNum;sec.rep=Math.max(sec.rep,2)}
+    for(const w of ms.getElementsByTagName('words')){const c=w.textContent.trim();if(c&&c.length<60)sec.notes.push(c)}
+    const chords=[];
+    for(const h of ms.getElementsByTagName('harmony')){
+      const kind=q(h,'kind');const kv=kind?kind.textContent.trim():'';
+      if(kv==='none'){chords.push('N.C.');continue}
+      const rs=tx(h,'root-step');if(!rs)continue;
+      let c=mxNote(rs,+tx(h,'root-alter')||0)+(MX_KIND[kv]!==undefined?MX_KIND[kv]:'');
+      for(const d of h.getElementsByTagName('degree')){const v=tx(d,'degree-value'),a=+tx(d,'degree-alter')||0,ty=tx(d,'degree-type');
+        if(ty==='subtract')continue;c+=(ty==='add'&&!a?'add':'')+(a>0?'#':a<0?'b':'')+v}
+      const bs=tx(h,'bass-step');if(bs)c+='/'+mxNote(bs,+tx(h,'bass-alter')||0);
+      chords.push(c)}
+    let cc=chords.length?chords.slice(0,4):['-'];
+    const pb=sec.bars[sec.bars.length-1];
+    if(cc.length===1&&pb&&(pb.c[0]===cc[0]||(pb.c[0]==='%'&&prevMx===cc[0])))cc=['%'];else if(cc.length)prevMx=cc[cc.length-1];
+    sec.bars.push({c:cc,e:ending});
+    if(bwd||endStop){if(ending===1&&!bwd)ending=1;else if(bwd)ending=ending===1?1:0;if(endStop&&ending===2)ending=0}
+    if(bwd&&!endNum)ending=0;
+  }
+  const s=secs.filter(x=>x.bars.length);
+  const notes=[];if(ts!=='44')notes.push('Time signature '+ts[0]+'/'+ts.slice(1)+'.');
+  return{title:title||'',artist,key,bpm:Math.max(30,Math.min(260,bpm||100)),groove:irGroove('',ts),chart:irChart(s),notes:notes.join(' ')};
+}
+/* .mxl = zipped MusicXML */
+async function unzipFirstXML(buf){
+  const u=new Uint8Array(buf),dv=new DataView(buf);let eocd=-1;
+  for(let i=u.length-22;i>=0;i--)if(dv.getUint32(i,true)===0x06054b50){eocd=i;break}
+  if(eocd<0)throw new Error('zip');
+  let p=dv.getUint32(eocd+16,true);const n=dv.getUint16(eocd+10,true);
+  for(let k=0;k<n;k++){
+    const method=dv.getUint16(p+10,true),csize=dv.getUint32(p+20,true),nl=dv.getUint16(p+28,true),el=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),off=dv.getUint32(p+42,true);
+    const name=new TextDecoder().decode(u.slice(p+46,p+46+nl));p+=46+nl+el+cl;
+    if(/^META-INF\//.test(name)||!/\.(xml|musicxml)$/i.test(name))continue;
+    const ln=dv.getUint16(off+26,true),le=dv.getUint16(off+28,true),data=u.slice(off+30+ln+le,off+30+ln+le+csize);
+    if(method===0)return new TextDecoder().decode(data);
+    const ds=new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    return await new Response(ds).text();
+  }
+  throw new Error('zip');
+}
+async function songsFromFile(file){
+  const name=(file.name||'').toLowerCase(),type=file.type||'';
+  if(/\.pdf$/.test(name)||type==='application/pdf')throw new Error('pdf');
+  if(/^image\//.test(type)||/\.(jpe?g|png|heic|gif|webp)$/.test(name))throw new Error('image');
+  const buf=await file.arrayBuffer();const head=new Uint8Array(buf.slice(0,4));
+  if(head[0]===0x50&&head[1]===0x4b){const x=await unzipFirstXML(buf);const s=parseMusicXML(x);return s?[s]:[]}
+  if(head[0]===0x25&&head[1]===0x50&&head[2]===0x44&&head[3]===0x46)throw new Error('pdf');
+  const txt=new TextDecoder().decode(buf);
+  const ir=parseIreal(txt);if(ir&&ir.length)return ir;
+  if(/<score-partwise|<score-timewise/.test(txt)){const s=parseMusicXML(txt);return s?[s]:[]}
+  return[];
+}
+
+function importSongs(list){
+  if(!list||!list.length){view.err='No chart found in this file. In iReal Pro use Share → iReal Pro (or MusicXML), save it to Files, then choose it here.';return renderEditKeep()}
+  if(list.length>1){list.forEach((x,k)=>S.songs.push(Object.assign({id:'s'+Date.now().toString(36)+k,transpose:0,spotify:'',lyricsBySection:{},lyrics:''},x)));save();view={...view,name:'list',id:null,err:''};render();window.scrollTo(0,0);toast(list.length+' songs imported');return}
+  const x=list[0],set=(id,v)=>{const el=document.getElementById(id);if(el&&v!==undefined&&v!=='')el.value=v};
+  view.err='';renderEditKeep();
+  const t=document.getElementById('e-t');if(!t.value.trim())set('e-t',x.title);
+  const a=document.getElementById('e-a');if(!a.value.trim())set('e-a',x.artist);
+  set('e-k',x.key);set('e-b',x.bpm);set('e-g',x.groove);set('e-c',x.chart);
+  const n=document.getElementById('e-n');if(x.notes&&!n.value.includes(x.notes))n.value=(n.value.trim()?n.value.trim()+'\n':'')+x.notes;
+  document.getElementById('e-c').scrollIntoView({block:'center'});toast('Chart imported: check it, then Save');
+}
+async function importFile(f){
+  if(!f)return;
+  try{importSongs(await songsFromFile(f))}
+  catch(e){view.err=e.message==='pdf'||e.message==='image'?'PDFs and images can\'t be read yet. In iReal Pro use Share → iReal Pro (or MusicXML), save it to Files, then choose that file.':'This file could not be read. In iReal Pro use Share → iReal Pro (or MusicXML).';renderEditKeep()}
+}
+document.addEventListener('change',e=>{if(e.target.id==='e-file'){const f=e.target.files&&e.target.files[0];e.target.value='';importFile(f)}});
+document.addEventListener('paste',e=>{if(view.name!=='edit')return;const t=(e.clipboardData&&e.clipboardData.getData('text'))||'';if(/irealb(ook)?:\/\//.test(t)){e.preventDefault();importSongs(parseIreal(t))}});
+document.addEventListener('dragover',e=>{if(view.name==='edit')e.preventDefault()});
+document.addEventListener('drop',e=>{if(view.name!=='edit')return;const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f){e.preventDefault();importFile(f)}});
 
 /* ============ events ============ */
 document.addEventListener('click',e=>{
