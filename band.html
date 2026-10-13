@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="robots" content="noindex,nofollow"><link rel="apple-touch-icon" href="band-icon.png"><link rel="icon" href="band-icon.png"><meta name="apple-mobile-web-app-title" content="LK Band"><meta name="theme-color" content="#141a33">
+<meta name="robots" content="noindex,nofollow"><link rel="apple-touch-icon" href="band-icon-v2.png"><link rel="icon" href="band-icon-v2.png"><meta name="apple-mobile-web-app-title" content="LK Band"><meta name="theme-color" content="#141a33">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Live Karaoke Band</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -195,6 +195,19 @@ a{color:inherit}
 .addsec{width:100%;border:1.5px dashed var(--line);border-radius:14px;min-height:48px;color:var(--muted);font-weight:700;margin-top:6px}
 .sheet.edsheet{max-height:58%;box-shadow:0 -10px 30px rgba(0,0,0,.45)}
 .sheet.edsheet .wrap{gap:10px;padding-block:12px}
+
+.bar.editable{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.bar.msel{outline:2px dashed var(--accent);outline-offset:-3px;background:color-mix(in srgb,var(--accent) 22%,transparent)}
+.selbar{position:fixed;left:0;right:0;bottom:0;z-index:52;background:var(--surface);border-top:1.5px solid var(--accent);box-shadow:0 -10px 30px rgba(0,0,0,.45);padding-bottom:env(safe-area-inset-bottom,0px)}
+.selbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-block:10px}
+.wrapnote{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.sheet.edsheet{max-height:48%}
+@media (min-width:900px),(orientation:landscape) and (min-width:640px){
+ .sheet.edsheet{left:auto;top:0;bottom:0;width:min(400px,40vw);max-height:none;border-radius:0;border-top:0;border-left:1px solid var(--line);box-shadow:-10px 0 30px rgba(0,0,0,.45)}
+ .sheet.edsheet .wrap{max-width:none;padding-inline:16px}
+ body.edside #app{padding-right:min(400px,40vw)}
+ body.edside .transport{right:min(400px,40vw)}body.edside .pubbar{right:calc(min(400px,40vw) + 12px)}
+}
 .shead{display:flex;align-items:center;gap:6px}
 .shead .stitle{flex:1;min-width:0}
 .lbl{font-family:var(--f-head);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
@@ -500,6 +513,19 @@ a{color:inherit}
 .addsec{width:100%;border:1.5px dashed var(--line);border-radius:14px;min-height:48px;color:var(--muted);font-weight:700;margin-top:6px}
 .sheet.edsheet{max-height:58%;box-shadow:0 -10px 30px rgba(0,0,0,.45)}
 .sheet.edsheet .wrap{gap:10px;padding-block:12px}
+
+.bar.editable{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.bar.msel{outline:2px dashed var(--accent);outline-offset:-3px;background:color-mix(in srgb,var(--accent) 22%,transparent)}
+.selbar{position:fixed;left:0;right:0;bottom:0;z-index:52;background:var(--surface);border-top:1.5px solid var(--accent);box-shadow:0 -10px 30px rgba(0,0,0,.45);padding-bottom:env(safe-area-inset-bottom,0px)}
+.selbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-block:10px}
+.wrapnote{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.sheet.edsheet{max-height:48%}
+@media (min-width:900px),(orientation:landscape) and (min-width:640px){
+ .sheet.edsheet{left:auto;top:0;bottom:0;width:min(400px,40vw);max-height:none;border-radius:0;border-top:0;border-left:1px solid var(--line);box-shadow:-10px 0 30px rgba(0,0,0,.45)}
+ .sheet.edsheet .wrap{max-width:none;padding-inline:16px}
+ body.edside #app{padding-right:min(400px,40vw)}
+ body.edside .transport{right:min(400px,40vw)}body.edside .pubbar{right:calc(min(400px,40vw) + 12px)}
+}
 .shead{display:flex;align-items:center;gap:6px}
 .shead .stitle{flex:1;min-width:0}
 .lbl{font-family:var(--f-head);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
@@ -1122,7 +1148,7 @@ function renderSong(){
           const blank=isBlank(b),e=endingOf(b),toks=b.map(stripEnd);
           const isSel=ed&&view.sel&&view.sel.si===si&&view.sel.bi===idx&&view.sheet==='bar';
           let cls='bar';if(blank)cls+=' blank';else{if(c===0||isBlank(row[c-1]))cls+=' lb';if(!firstDone){cls+=' first lb';firstDone=true}}
-          if(ed)cls+=' editable';if(isSel)cls+=' sel';
+          if(ed)cls+=' editable';if(isSel)cls+=' sel';if(ed&&view.mselOn&&(view.msel||[]).includes(si+','+idx))cls+=' msel';
           let inner='';
           if(!blank){
             if(toks.length===1&&toks[0]==='%')inner='<span class="pct">%</span>';
@@ -1230,7 +1256,9 @@ function renderEdit(){
 }
 function renderSheet(){
   const oldSh=document.querySelector('.sheet'),st0=oldSh&&oldSh.dataset.kind===view.sheet?oldSh.scrollTop:0;
-  document.querySelectorAll('.scrim,.sheet').forEach(e=>e.remove());
+  document.querySelectorAll('.scrim,.sheet,.selbar').forEach(e=>e.remove());
+  document.body.classList.toggle('edside',view.sheet==='bar'||view.sheet==='sec');
+  if(view.mselOn&&view.chartEdit){const n=(view.msel||[]).length;document.body.insertAdjacentHTML('beforeend',`<div class="selbar" role="toolbar" aria-label="Selected bars"><div class="wrap"><span><b>${n} bar${n>1?'s':''} selected</b> <span class="small">· tap bars to add or remove</span></span><span class="row"><button class="btn sm" data-act="msel-cancel">Cancel</button><button class="btn sm warn" data-act="msel-del">Delete</button><button class="btn sm pri" data-act="msel-copy">${IC.copy}Copy</button></span></div></div>`)}
   if(!view.sheet)return;
   if(view.sheet==='bar'||view.sheet==='sec'){
     const h=view.sheet==='bar'?barSheetHTML():secSheetHTML();if(!h){view.sheet=null;return}
@@ -1293,11 +1321,18 @@ function irChart(secs){
     if(!sc.bars.length&&!sc.notes.length)return;
     out.push('['+(sc.label||'PART')+(sc.rep>1?' x'+sc.rep:'')+']');
     if(sc.notes.length)out.push('! '+sc.notes.join(' · '));
-    for(let i=0;i<sc.bars.length;i+=4)out.push('| '+sc.bars.slice(i,i+4).map(b=>(b.e?b.e+'.':'')+b.c.join(' ')).join(' | ')+' |');
+    const rows=[];let cur=null,pe=-1;sc.bars.forEach(b=>{if(!cur||cur.length>=4||(b.e!==pe&&cur.length)){cur=[];rows.push(cur)}cur.push(b);pe=b.e});
+    rows.forEach(r=>out.push('| '+r.map(b=>(b.e?b.e+'.':'')+b.c.join(' ')).join(' | ')+' |'));
   });
   return out.join('\n');
 }
 const IR_SEC={i:'INTRO',I:'INTRO',v:'VERSE',V:'VERSE'};
+/* section names written as comments in iReal ("<Chorus>", "<Verse 2>", "<Refrain x2>") become section names here */
+const IR_WORDS=[[/^pre[- ]?(chorus|refrain|ritornello)\b|^pre\b/i,'PRE-CHORUS'],[/^post[- ]?(chorus|refrain)\b/i,'POST-CHORUS'],[/^intro(duction|duzione)?\b/i,'INTRO'],[/^(verse|strofa|couplet|strophe|verso|vers)\b/i,'VERSE'],[/^(chorus|refrain|ritornello|estribillo|coro|hook)\b/i,'CHORUS'],[/^(bridge|ponte|pont|puente)\b/i,'BRIDGE'],[/^(solo|instrumental|instru)\b/i,'SOLO'],[/^(interlude|interludio|interlude)\b/i,'INTERLUDE'],[/^(outro|ending|finale|final)\b/i,'OUTRO'],[/^coda\b/i,'CODA'],[/^break\b/i,'BREAK'],[/^(tag|vamp)\b/i,'TAG']];
+function irSecWord(c){c=String(c||'').trim();for(const[re,lab]of IR_WORDS){const m=re.exec(c);if(!m)continue;let rest=c.slice(m[0].length).trim(),label=lab,rep=0;
+  const n=/^(\d+)\b/.exec(rest);if(n){label+=' '+n[1];rest=rest.slice(n[0].length).trim()}
+  const x=/(\d+)\s*x\b|\bx\s*(\d+)/i.exec(rest);if(x){rep=+(x[1]||x[2]);rest=(rest.slice(0,x.index)+rest.slice(x.index+x[0].length)).trim()}
+  rest=rest.replace(/^[-–:·,()\s]+|[()\s]+$/g,'');return{label,rep,rest}}return null}
 function irMusic(raw,plain){
   const t=plain?raw:irUnscramble(raw);
   const secs=[];let prevCh=null,sec=null,bar=null,open=false,ending=0,inRep=false,swallow=false,last=null,ts='44',firstTs='';
@@ -1326,7 +1361,9 @@ function irMusic(raw,plain){
     if((m=/^T(\d\d)/.exec(r))){ts=m[1];if(!firstTs)firstTs=ts;i+=3;continue}
     if((m=/^N(\d)/.exec(r))){ending=+m[1]>2?0:+m[1];if(sec&&ending)sec.rep=Math.max(sec.rep,2);i+=2;continue}
     if((m=/^<([^>]*)>/.exec(r))){const c=m[1].trim();ensure();
-      const x=/(\d+)\s*x\b|\bx\s*(\d+)/i.exec(c);if(x&&c.length<12)sec.rep=Math.max(sec.rep,+(x[1]||x[2]));else if(c)sec.notes.push(c);
+      const sw=irSecWord(c);
+      if(sw){if(sec.bars.length)newSec(sw.label);else sec.label=sw.label;ending=0;if(sw.rep)sec.rep=Math.max(sec.rep,sw.rep);if(sw.rest)sec.notes.push(sw.rest)}
+      else{const x=/(\d+)\s*x\b|\bx\s*(\d+)/i.exec(c);if(x&&c.length<12)sec.rep=Math.max(sec.rep,+(x[1]||x[2]));else if(c)sec.notes.push(c)}
       i+=m[0].length;continue}
     if((m=CH.exec(r))){
       let ch=m[1]+irQual(m[2])+(m[4]||'');last=m[1]+irQual(m[2]);bar.c.push(ch);i+=m[0].length;continue}
@@ -1470,11 +1507,31 @@ document.addEventListener('paste',e=>{if(view.name!=='edit')return;const t=(e.cl
 document.addEventListener('dragover',e=>{if(view.name==='edit')e.preventDefault()});
 document.addEventListener('drop',e=>{if(view.name!=='edit')return;const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f){e.preventDefault();importFile(f)}});
 
+
+/* ---- multi-bar selection: press and hold a bar, tap more bars, then copy or delete ---- */
+function mselList(){const secs=parseChart(song().chart),keys=new Set(view.msel||[]),out=[];secs.forEach((sc,si)=>sc.bars.forEach((b,bi)=>{if(keys.has(si+','+bi))out.push({si,bi,b})}));return out}
+function mselCopy(){const s=song(),L=mselList();if(!L.length)return;const bars=L.map(x=>x.b.map(t=>mapTok(s,stripEnd(t),toDisp))),rows=[];for(let k=0;k<bars.length;k+=4)rows.push(bars.slice(k,k+4));
+  lsSet('lkb-clip',{label:L.length+' bar'+(L.length>1?'s':''),repeat:1,cue:'',song:s.title,bars:[].concat(...rows),rows,kind:'bars'});
+  view.mselOn=false;view.msel=[];render();toast(L.length+' bar'+(L.length>1?'s':'')+' copied: open a bar or a section to paste')}
+function mselDel(){const L=mselList();if(!L.length)return;const keys=new Set(view.msel);view.mselOn=false;view.msel=[];view.sheet=null;view.sel=null;
+  editChart(secs=>{secs.forEach((sc,si)=>{let bi=0;sc.rows=sc.rows.map(r=>r.filter(()=>!keys.has(si+','+(bi++)))).filter(r=>r.length);sc.bars=[].concat(...sc.rows)})});toast(L.length+' deleted · Undo is at the top')}
+(function(){let tm=0,sx=0,sy=0,fired=false;
+  document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('[data-bar]');if(!b||!view.chartEdit)return;fired=false;sx=e.clientX;sy=e.clientY;clearTimeout(tm);
+    tm=setTimeout(()=>{fired=true;const k=b.dataset.bar;if(!view.mselOn){view.mselOn=true;view.msel=[k]}else if(!view.msel.includes(k))view.msel.push(k);view.sheet=null;view.sel=null;try{navigator.vibrate&&navigator.vibrate(15)}catch(_){}render()},450)});
+  const stop=()=>clearTimeout(tm);
+  document.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)+Math.abs(e.clientY-sy)>10)stop()});
+  document.addEventListener('pointerup',stop);document.addEventListener('pointercancel',stop);
+  document.addEventListener('click',e=>{if(fired){fired=false;e.stopPropagation();e.preventDefault()}},true);
+  document.addEventListener('contextmenu',e=>{if(view.chartEdit&&e.target.closest&&e.target.closest('[data-bar]'))e.preventDefault()});
+})();
+
 /* ============ events ============ */
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act],[data-open],[data-key],[data-sec],[data-tab],[data-bpm],[data-mv],[data-sw],[data-seg],[data-editsec],[data-savesec],[data-startsec],[data-bar],[data-secedit],[data-addbar],[data-pickc],[data-broot],[data-bq],[data-bbass],[data-stype],[data-snum],[data-sameas],[data-goto]');if(!b||b.disabled)return;
   const s=song(),d=b.dataset;
+  if(d.open||d.tab||['home','prev','next','edit','chart-done'].includes(d.act)){view.mselOn=false;view.msel=[];view.wrapped=null}
   if(d.open||d.tab||['home','prev','next','edit'].includes(d.act)){view.chartEdit=false;view.sel=null;if(view.sheet==='bar'||view.sheet==='sec')view.sheet=null}
+  if(d.bar&&view.mselOn){const k=d.bar,m=view.msel||(view.msel=[]);const j=m.indexOf(k);if(j>=0)m.splice(j,1);else m.push(k);if(!m.length)view.mselOn=false;render();return}
   if(d.bar){const[si,bi]=d.bar.split(',').map(Number);view.sel={si,bi,ci:0};view.sheet='bar';render();scrollSel();return}
   if(d.secedit!==undefined){view.edSec=+d.secedit;view.sel=null;view.sheet='sec';view.confirmSecDel=false;render();return}
   if(d.addbar!==undefined){view.edSec=+d.addbar;secOp('addbar');return}
@@ -1557,6 +1614,12 @@ document.addEventListener('click',e=>{
     case'bar-end2':barOp('end2');break;
     case'bar-before':barOp('before');break;
     case'bar-after':barOp('after');break;
+    case'bar-keepline':barOp('keepline');break;
+    case'bar-paste':barOp('paste');toast('Pasted');break;
+    case'sec-pasteend':secOp('pasteend');toast('Pasted at the end');break;
+    case'msel-cancel':view.mselOn=false;view.msel=[];render();break;
+    case'msel-copy':mselCopy();break;
+    case'msel-del':mselDel();break;
     case'bar-del':barOp('del');break;
     case'bar-prev':barNav(-1);break;
     case'bar-next':barNav(1);break;
@@ -1674,19 +1737,25 @@ function setPart(part,val){editChart((secs,s)=>{const x=view.sel,bar=secs[x.si]&
   if(part==='root')root=val;else if(part==='q')q=val;else bass=val;
   if(bass===root)bass='';
   bar[x.ci]=toOrig(s,root+q+(bass?'/'+bass:''));if(e&&x.ci===0)bar[0]=e+'.'+bar[0];else if(e&&x.ci!==0&&!/^[12]\./.test(bar[0]))bar[0]=e+'.'+bar[0]})}
-function barOp(op){editChart((secs,s)=>{const x=view.sel,sec=secs[x.si];if(!sec||!sec.bars[x.bi])return;const bar=sec.bars[x.bi],L=locate(sec,x.bi),row=sec.rows[L.r];
+/* a row holds 4 bars: extra bars move to new rows below (the next rows keep their layout) */
+function wrapRow(sec,r){const row=sec.rows[r];if(!row||row.length<=4)return false;const extra=row.splice(4),nr=[];for(let k=0;k<extra.length;k+=4)nr.push(extra.slice(k,k+4));sec.rows.splice(r+1,0,...nr);return true}
+function clipBars(s){const c=lsClip();if(!c)return[];const rows=c.rows||[];return[].concat(...rows).map(b=>b.map(x=>mapTok(s,x,toOrig)))}
+function barOp(op){if(op!=='keepline')view.wrapped=null;editChart((secs,s)=>{const x=view.sel,sec=secs[x.si];if(!sec||!sec.bars[x.bi])return;const bar=sec.bars[x.bi],L=locate(sec,x.bi),row=sec.rows[L.r];
   const set=nb=>{row[L.c]=withEnding(bar,nb)};
   if(op==='add'){if(!bar.every(isChord)){set([toOrig(s,tonicDisp(s))]);x.ci=0}else if(bar.length<4){bar.push(stripEnd(bar[x.ci]||bar[bar.length-1]));x.ci=bar.length-1}}
   else if(op==='delchord'){if(bar.length>1){const e=endingOf(bar);bar.splice(x.ci,1);if(e&&!endingOf(bar))bar[0]=e+'.'+bar[0];x.ci=Math.max(0,x.ci-1)}}
   else if(op==='nc'){set(['N.C.']);x.ci=0}
   else if(/^end[012]$/.test(op)){const n=+op[3];bar[0]=(n?n+'.':'')+stripEnd(bar[0])}
   else if(op==='rep'){set(['%']);x.ci=0}
-  else if(op==='before'){row.splice(L.c,0,bar.map(stripEnd));x.ci=0}
-  else if(op==='after'){row.splice(L.c+1,0,bar.map(stripEnd));x.bi++;x.ci=0}
+  else if(op==='before'){row.splice(L.c,0,bar.map(stripEnd));x.ci=0;if(wrapRow(sec,L.r))view.wrapped={si:x.si,r:L.r}}
+  else if(op==='after'){row.splice(L.c+1,0,bar.map(stripEnd));x.bi++;x.ci=0;if(wrapRow(sec,L.r))view.wrapped={si:x.si,r:L.r}}
+  else if(op==='keepline'){const w=view.wrapped;if(w&&w.si===x.si&&sec.rows[w.r+1]){sec.rows[w.r]=sec.rows[w.r].concat(sec.rows.splice(w.r+1,1)[0])}view.wrapped=null}
+  else if(op==='paste'){const nb=clipBars(s);if(!nb.length)return;row.splice(L.c+1,0,...nb);wrapRow(sec,L.r);x.bi+=1;x.ci=0}
   else if(op==='del'){row.splice(L.c,1);if(!row.length)sec.rows.splice(L.r,1);const total=sec.rows.reduce((a,r)=>a+r.length,0);if(!total){view.sheet=null;view.sel=null}else{x.bi=Math.min(x.bi,total-1);x.ci=0}}
-});scrollSel()}
+});if(view.wrapped){const sh=document.querySelector('.sheet');if(sh)sh.scrollTop=0}scrollSel()}
 function barNav(dir){const secs=parseChart(song().chart),flat=[];secs.forEach((sc,si)=>sc.bars.forEach((_,bi)=>flat.push([si,bi])));const i=flat.findIndex(([a,b])=>a===view.sel.si&&b===view.sel.bi),j=i+dir;if(j<0||j>=flat.length)return;view.sel={si:flat[j][0],bi:flat[j][1],ci:0};render();scrollSel()}
-function scrollSel(){const x=view.sel;if(!x)return;const el=document.getElementById(`b-${x.si}-${x.bi}`);if(!el)return;const r=el.getBoundingClientRect(),vh=window.innerHeight;if(r.top<120||r.bottom>vh*0.4)window.scrollBy({top:r.top-vh*0.18})}
+function scrollSel(){const x=view.sel;if(!x)return;const el=document.getElementById(`b-${x.si}-${x.bi}`);if(!el)return;const r=el.getBoundingClientRect(),vh=window.innerHeight,side=matchMedia(SIDEQ).matches;if(side){if(r.top<90||r.bottom>vh-40)window.scrollBy({top:r.top-vh*0.3})}else if(r.top<120||r.bottom>vh*0.48)window.scrollBy({top:r.top-vh*0.16})}
+const SIDEQ='(min-width:900px),(orientation:landscape) and (min-width:640px)';
 function splitLabel(l){const m=/^(.*?)(?:\s+(\d+))?$/.exec((l||'').trim());return{type:(m&&m[1]||'VERSE').trim()||'VERSE',num:(m&&m[2])||''}}
 function renameLyrics(s,secs,oldL,newL){const L=s.lyricsBySection||{};if(L[oldL]&&!L[newL]&&secs.filter(x=>x.label===oldL).length<=1){L[newL]=L[oldL];delete L[oldL];s.lyricsBySection=L}}
 function secOp(op,val){editChart((secs,s)=>{const i=view.edSec,sec=secs[i];if(!sec)return;
@@ -1700,18 +1769,22 @@ function secOp(op,val){editChart((secs,s)=>{const i=view.edSec,sec=secs[i];if(!s
   else if(op==='cue'){sec.cue=String(val||'').trim()}
   else if(op==='note'){sec.note=String(val||'').trim()}
   else if(op==='paste'||op==='pastebelow'){const c=lsClip();if(!c)return;const src=c.rows||(()=>{const r=[];for(let k=0;k<(c.bars||[]).length;k+=4)r.push(c.bars.slice(k,k+4));return r})();const rows=src.map(r=>r.map(b=>b.map(x=>mapTok(s,x,toOrig))));if(op==='paste')sec.rows=rows;else{secs.splice(i+1,0,{label:c.label||'VERSE',repeat:c.repeat||1,rows,cue:c.cue||''});view.edSec=i+1}}
+  else if(op==='pasteend'){const nb=clipBars(s);if(!nb.length)return;if(!sec.rows.length)sec.rows.push([]);const r=sec.rows.length-1;sec.rows[r].push(...nb);wrapRow(sec,r)}
   else if(op==='sameas'){const o=secs[val];if(o)sec.rows=JSON.parse(JSON.stringify(o.rows))}
   else if(op==='below'){const t=toOrig(s,tonicDisp(s));secs.splice(i+1,0,{label:'VERSE',repeat:1,rows:[[[t],[t],[t],[t]]],cue:''});view.edSec=i+1}
 })}
+function clipN(c){return c&&c.rows?c.rows.reduce((a,r)=>a+r.length,0):0}
 function accTxt(n){return n.replace('#','♯').replace(/^([A-G])b$/,'$1♭')}
 function barSheetHTML(){
   const s=song();if(!s||!view.sel)return'';const secs=parseChart(s.chart),x=view.sel,sec=secs[x.si],bar=sec&&sec.bars[x.bi];if(!bar)return'';
-  if(x.ci>=bar.length)x.ci=0;
+  if(x.ci>=bar.length)x.ci=0;const clip=lsClip();
   const d=dispCtx(s),names=d.flat?FLAT:SHARP,jazz=S.settings.notation==='jazz';
   const cur=stripEnd(bar[x.ci]),cc=isChord(cur)?splitChord(toDisp(s,cur)):null,croot=cc?cc.l+cc.a:null,cq=cc?cc.q:null,cb=cc&&cc.bass?cc.bass.l+cc.bass.a:'';
   const chips=bar.map((c,k)=>`<button class="chipc" data-pickc="${k}" aria-pressed="${k===x.ci}" aria-label="Chord ${k+1}">${SPECIAL.includes(stripEnd(c))?({'%':'%','%%':'%%','-':'—','_':'·'})[stripEnd(c)]:chordHTML(c,d.t,d.flat,jazz)}</button>`).join('')+(bar.length<4?`<button class="chipc add" data-act="bar-add" aria-label="Add a chord to this bar">+</button>`:'');
   return`<div class="shead"><button class="ib" data-act="bar-prev" aria-label="Previous bar">${IC.back}</button><div class="stitle"><div class="lbl">${esc(sec.label||'Section')} · bar ${x.bi+1} of ${sec.bars.length}</div><div class="small">Choose a chord, then its root and type.</div></div><button class="ib" data-act="bar-next" aria-label="Next bar">${IC.next}</button>${undoBtns()}<button class="btn sm pri" data-act="close-sheet">Done</button></div>
   ${linkHTML()}
+  ${view.wrapped&&view.wrapped.si===x.si?`<div class="wrapnote"><span class="small">The row was full: the new bar went to a new line.</span><button class="btn sm" data-act="bar-keepline">Keep it on the same line</button></div>`:''}
+  ${clip?`<div class="row"><button class="btn sm" data-act="bar-paste">${IC.copy}Paste ${clipN(clip)} copied bar${clipN(clip)>1?'s':''} after this one</button></div>`:''}
   <div class="chips">${chips}</div>
   <div class="lbl">Root</div><div class="pick">${names.map(n=>`<button data-broot="${n}" aria-pressed="${n===croot}">${accTxt(n)}</button>`).join('')}</div>
   <div class="lbl">Chord type</div><div class="qual">${QUALS.map(q=>`<button data-bq="${q}" aria-pressed="${cc?q===cq:false}">${q===''?'maj':esc(fmtQ(q,jazz))}</button>`).join('')}</div>
@@ -1720,7 +1793,8 @@ function barSheetHTML(){
   <div class="lbl">Ending (1st / 2nd time)</div>
   <div class="qual txt">${[0,1,2].map(n=>`<button data-act="bar-end${n}" aria-pressed="${endingOf(bar)===n}">${n?n+'. '+(n===1?'1st time only':'2nd time'):'None'}</button>`).join('')}</div>
   <div class="small">1. = played only the first time. 2. = played instead of it the second time: put it on the bar that replaces it, also in the next section.</div>
-  <div class="row"><button class="btn sm" data-act="bar-before">+ Bar before</button><button class="btn sm" data-act="bar-after">+ Bar after</button><button class="btn sm warn" data-act="bar-del">Delete bar</button></div>`;
+  <div class="row"><button class="btn sm" data-act="bar-before">+ Bar before</button><button class="btn sm" data-act="bar-after">+ Bar after</button><button class="btn sm warn" data-act="bar-del">Delete bar</button></div>
+  <div class="small">Tip: press and hold a bar to select several bars, then copy them.</div>`;
 }
 function secSheetHTML(){
   const s=song();if(!s)return'';const secs=parseChart(s.chart),i=view.edSec,sec=secs[i];if(!sec)return'';const p=splitLabel(sec.label),clip=lsClip();
@@ -1737,8 +1811,8 @@ function secSheetHTML(){
   <div class="lbl">Instrumentation / break note</div>
   <div class="inrow"><input id="sec-note" value="${esc(sec.note||'')}" placeholder="Soft: drums + voice · Break on 1 · Guitar in"><button class="btn sm pri" data-act="sec-note">Save</button></div>
   <div class="lbl">Copy and paste</div>
-  <div class="row"><button class="btn sm" data-act="sec-copy">${IC.copy}Copy this section</button><button class="btn sm" data-act="sec-paste" ${clip?'':'disabled style="opacity:.4"'}>Paste chords here</button><button class="btn sm" data-act="sec-pastebelow" ${clip?'':'disabled style="opacity:.4"'}>Paste as new section below</button></div>
-  ${clip?`<div class="small">Copied: ${esc(clip.label)} (${clip.bars.length} bars${clip.song&&clip.song!==s.title?', from '+esc(clip.song):''})</div>`:''}
+  <div class="row"><button class="btn sm" data-act="sec-copy">${IC.copy}Copy this section</button><button class="btn sm" data-act="sec-paste" ${clip?'':'disabled style="opacity:.4"'}>Paste chords here</button><button class="btn sm" data-act="sec-pasteend" ${clip?'':'disabled style="opacity:.4"'}>Paste at the end</button><button class="btn sm" data-act="sec-pastebelow" ${clip?'':'disabled style="opacity:.4"'}>Paste as new section below</button></div>
+  ${clip?`<div class="small">Copied: ${esc(clip.label)} (${clipN(clip)} bars${clip.song&&clip.song!==s.title?', from '+esc(clip.song):''})</div>`:''}
   ${others.length?`<div class="lbl">Same chords as</div><div class="qual txt">${others.map(o=>`<button data-sameas="${o.i}">${esc(o.label)}</button>`).join('')}</div>`:''}
   <div class="lbl">Chord durations (this section)</div>
   <div class="row"><button class="btn sm" data-act="sec-half">½ Two bars into one</button><button class="btn sm" data-act="sec-double">×2 One bar into two</button></div>
