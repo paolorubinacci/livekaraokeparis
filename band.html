@@ -1619,7 +1619,9 @@ document.addEventListener('click',e=>{
     case'sec-spell':secOp('spell',d.v==='b');toast(d.v==='b'?'Section written with ♭':'Section written with ♯');break;
     case'sec-ctr-open':view.ctrOpen=!view.ctrOpen;renderSheet();break;
     case'sec-ctr-sp':view.ctrSp=d.v||'';renderSheet();break;
-    case'sec-ctr':secOp('ctr',+d.n);view.ctrOpen=false;toast('Transposed copy added below');break;
+    case'sec-ctr':view.noLink=true;secOp('ctr',+d.n);view.noLink=false;view.ctrOpen=false;toast('Transposed copy added below');break;
+    case'sec-tr-open':view.trOpen=!view.trOpen;renderSheet();break;
+    case'sec-tr':view.noLink=true;secOp('tr',+d.n);view.noLink=false;toast('Section moved '+(+d.n>0?'up ':'down ')+Math.abs(+d.n)+' semitone'+(Math.abs(+d.n)>1?'s':'')+' · Undo is at the top');break;
     case'bar-paste':barOp('paste');toast('Pasted');break;
     case'sec-pasteend':secOp('pasteend');toast('Pasted at the end');break;
     case'msel-cancel':view.mselOn=false;view.msel=[];render();break;
@@ -1699,7 +1701,7 @@ function linkHTML(){const s=song();if(!s)return'';const si=curSi();if(si==null)r
   const names=sib.map(j=>esc(secs[j].label||'Section')+(secs.filter(x=>x.label===secs[j].label).length>1?' ('+(j+1)+')':'')).join(', ');
   return`<button class="linkt" data-act="link-toggle" aria-pressed="${on}"><span class="box">${on?'✓':''}</span><span>Also apply chord changes to <b>${names}</b></span></button>`}
 function editChart(fn){const s=song();if(!s)return;const secs=parseChart(s.chart);const before=s.chart;
-  const si=curSi(),sib=si!=null&&linkOn(si)?siblingsOf(secs,si):[],labels=secs.map(x=>x.label).join('\n');
+  const si=curSi(),sib=si!=null&&linkOn(si)&&!view.noLink?siblingsOf(secs,si):[],labels=secs.map(x=>x.label).join('\n');
   fn(secs,s);
   if(sib.length&&secs.length===labels.split('\n').length&&secs.map(x=>x.label).join('\n')===labels&&secs[si]){const r=JSON.stringify(secs[si].rows);sib.forEach(j=>{secs[j].rows=JSON.parse(r);secs[j].bars=[].concat(...secs[j].rows)})}
   const after=serialize(secs);if(after!==before){(UNDO[s.id]=UNDO[s.id]||[]).push(before);REDO[s.id]=[];if(UNDO[s.id].length>80)UNDO[s.id].shift();s.chart=after;save()}render()}
@@ -1775,6 +1777,9 @@ function secOp(op,val){editChart((secs,s)=>{const i=view.edSec,sec=secs[i];if(!s
   else if(op==='note'){sec.note=String(val||'').trim()}
   else if(op==='paste'||op==='pastebelow'){const c=lsClip();if(!c)return;const src=c.rows||(()=>{const r=[];for(let k=0;k<(c.bars||[]).length;k+=4)r.push(c.bars.slice(k,k+4));return r})();const rows=src.map(r=>r.map(b=>b.map(x=>mapTok(s,x,toOrig))));if(op==='paste')sec.rows=rows;else{secs.splice(i+1,0,{label:c.label||'VERSE',repeat:c.repeat||1,rows,cue:c.cue||''});view.edSec=i+1}}
   else if(op==='spell'){sec.rows=sec.rows.map(r=>r.map(b=>b.map(x=>mapTok(s,x,(_,c)=>respell(c,val)))));sec.bars=[].concat(...sec.rows)}
+  else if(op==='tr'){const n=((val%12)+12)%12;let k=parseKey(s.key);const f0=sec.bars.map(b=>stripEnd(b[0])).find(isChord);if(f0){const x=splitChord(f0);k={idx:noteIdx(x.l,x.a),minor:/^m(?!aj)/.test(x.q||'')}}
+    const sp=view.ctrSp==='b'?true:view.ctrSp==='#'?false:prefersFlat((k.idx+n)%12,k.minor);
+    sec.rows=sec.rows.map(r=>r.map(b=>b.map(x=>mapTok(s,x,(_,c)=>trChord(c,n,sp)))));sec.bars=[].concat(...sec.rows)}
   else if(op==='ctr'){const n=((val%12)+12)%12;/* auto: the section's own key, guessed from its first chord (e.g. Fm), moved by n -> flats or sharps like a key signature */
     let k=parseKey(s.key);const f0=sec.bars.map(b=>stripEnd(b[0])).find(isChord);if(f0){const x=splitChord(f0);k={idx:noteIdx(x.l,x.a),minor:/^m(?!aj)/.test(x.q||'')}}
     const sp=view.ctrSp==='b'?true:view.ctrSp==='#'?false:prefersFlat((k.idx+n)%12,k.minor);
@@ -1831,6 +1836,11 @@ function secSheetHTML(){
   ${others.length?`<div class="lbl">Same chords as</div><div class="qual txt">${others.map(o=>`<button data-sameas="${o.i}">${esc(o.label)}</button>`).join('')}</div>`:''}
   <div class="lbl">Spelling (this section)</div>
   <div class="row"><button class="btn sm" data-act="sec-spell" data-v="b">Write with ♭ (E♭, D♭…)</button><button class="btn sm" data-act="sec-spell" data-v="#">Write with ♯ (D♯, C♯…)</button></div>
+  <div class="lbl">Transpose this section</div>
+  <div class="row"><button class="btn sm" data-act="sec-tr-open" aria-expanded="${!!view.trOpen}">↕ Transpose this section…</button></div>
+  ${view.trOpen?`<div class="small">Moves only this section by the semitones you tap (the other sections stay as they are). You can tap several times; Undo goes back.</div>
+  <div class="qual txt">${[-6,-5,-4,-3,-2,-1,1,2,3,4,5,6].map(n=>`<button data-act="sec-tr" data-n="${n}">${n>0?'+':'−'}${Math.abs(n)}</button>`).join('')}</div>
+  <div class="opt"><span>Accidentals</span><span class="seg">${[['','Auto'],['b','♭'],['#','♯']].map(([v,l])=>`<button data-act="sec-ctr-sp" data-v="${v}" aria-pressed="${(view.ctrSp||'')===v}">${l}</button>`).join('')}</span></div>`:''}
   <div class="lbl">Copy &amp; transpose</div>
   <div class="row"><button class="btn sm" data-act="sec-ctr-open" aria-expanded="${!!view.ctrOpen}">${IC.copy}Copy &amp; transpose…</button></div>
   ${view.ctrOpen?`<div class="small">Adds a copy of this section below, moved by the number of semitones you tap.</div>
