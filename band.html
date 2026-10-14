@@ -200,6 +200,7 @@ a{color:inherit}
 .bar.msel{outline:2px dashed var(--accent);outline-offset:-3px;background:color-mix(in srgb,var(--accent) 22%,transparent)}
 .selbar{position:fixed;left:0;right:0;bottom:0;z-index:52;background:var(--surface);border-top:1.5px solid var(--accent);box-shadow:0 -10px 30px rgba(0,0,0,.45);padding-bottom:env(safe-area-inset-bottom,0px)}
 .selbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-block:10px}
+.trask{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;border:1.5px solid var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
 .wrapnote{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,transparent)}
 .sheet.edsheet{max-height:48%}
 @media (min-width:900px),(orientation:landscape) and (min-width:640px){
@@ -518,6 +519,7 @@ a{color:inherit}
 .bar.msel{outline:2px dashed var(--accent);outline-offset:-3px;background:color-mix(in srgb,var(--accent) 22%,transparent)}
 .selbar{position:fixed;left:0;right:0;bottom:0;z-index:52;background:var(--surface);border-top:1.5px solid var(--accent);box-shadow:0 -10px 30px rgba(0,0,0,.45);padding-bottom:env(safe-area-inset-bottom,0px)}
 .selbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-block:10px}
+.trask{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;border:1.5px solid var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
 .wrapnote{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,transparent)}
 .sheet.edsheet{max-height:48%}
 @media (min-width:900px),(orientation:landscape) and (min-width:640px){
@@ -1533,7 +1535,7 @@ document.addEventListener('click',e=>{
   if(d.open||d.tab||['home','prev','next','edit'].includes(d.act)){view.chartEdit=false;view.sel=null;if(view.sheet==='bar'||view.sheet==='sec')view.sheet=null}
   if(d.bar&&view.mselOn){const k=d.bar,m=view.msel||(view.msel=[]);const j=m.indexOf(k);if(j>=0)m.splice(j,1);else m.push(k);if(!m.length)view.mselOn=false;render();return}
   if(d.bar){const[si,bi]=d.bar.split(',').map(Number);view.sel={si,bi,ci:0};view.sheet='bar';render();scrollSel();return}
-  if(d.secedit!==undefined){view.edSec=+d.secedit;view.sel=null;view.sheet='sec';view.confirmSecDel=false;render();return}
+  if(d.secedit!==undefined){view.trAsk=null;view.edSec=+d.secedit;view.sel=null;view.sheet='sec';view.confirmSecDel=false;render();return}
   if(d.addbar!==undefined){view.edSec=+d.addbar;secOp('addbar');return}
   if(d.pickc!==undefined){view.sel.ci=+d.pickc;renderSheet();return}
   if(d.broot!==undefined){setPart('root',d.broot);return}
@@ -1621,7 +1623,12 @@ document.addEventListener('click',e=>{
     case'sec-ctr-sp':view.ctrSp=d.v||'';renderSheet();break;
     case'sec-ctr':view.noLink=true;secOp('ctr',+d.n);view.noLink=false;view.ctrOpen=false;toast('Transposed copy added below');break;
     case'sec-tr-open':view.trOpen=!view.trOpen;renderSheet();break;
-    case'sec-tr':view.noLink=true;secOp('tr',+d.n);view.noLink=false;toast('Section moved '+(+d.n>0?'up ':'down ')+Math.abs(+d.n)+' semitone'+(Math.abs(+d.n)>1?'s':'')+' · Undo is at the top');break;
+    case'sec-tr':{const si=view.edSec,sib=siblingsOf(parseChart(s.chart),si);
+      /* linked sections: transposing usually concerns one section only, so ask before applying it to the others */
+      if(sib.length&&linkOn(si)&&d.all===undefined){view.trAsk={n:+d.n,k:sib.length};renderSheet();const b=document.querySelector('.trask');if(b)b.scrollIntoView({block:'center'});break}
+      view.trAsk=null;const all=d.all==='1';view.noLink=!all;secOp('tr',+d.n);view.noLink=false;
+      toast((all?'This section and the linked ones':'Only this section')+' moved '+(+d.n>0?'up ':'down ')+Math.abs(+d.n)+' semitone'+(Math.abs(+d.n)>1?'s':''));break}
+    case'sec-tr-cancel':view.trAsk=null;renderSheet();break;
     case'bar-paste':barOp('paste');toast('Pasted');break;
     case'sec-pasteend':secOp('pasteend');toast('Pasted at the end');break;
     case'msel-cancel':view.mselOn=false;view.msel=[];render();break;
@@ -1840,6 +1847,8 @@ function secSheetHTML(){
   <div class="row"><button class="btn sm" data-act="sec-tr-open" aria-expanded="${!!view.trOpen}">↕ Transpose this section…</button></div>
   ${view.trOpen?`<div class="small">Moves only this section by the semitones you tap (the other sections stay as they are). You can tap several times; Undo goes back.</div>
   <div class="qual txt">${[-6,-5,-4,-3,-2,-1,1,2,3,4,5,6].map(n=>`<button data-act="sec-tr" data-n="${n}">${n>0?'+':'−'}${Math.abs(n)}</button>`).join('')}</div>
+  ${view.trAsk?`<div class="trask" role="alertdialog" aria-label="Linked sections"><b>⚠️ This section is linked to ${view.trAsk.k} other section${view.trAsk.k>1?'s':''} with the same chords.</b><span class="small">Do you also want to transpose ${view.trAsk.k>1?'them':'it'} (${view.trAsk.n>0?'+':'−'}${Math.abs(view.trAsk.n)})? Usually only one section changes key.</span>
+    <div class="row"><button class="btn sm pri" data-act="sec-tr" data-n="${view.trAsk.n}" data-all="0">Only this section</button><button class="btn sm warn" data-act="sec-tr" data-n="${view.trAsk.n}" data-all="1">Yes, all ${view.trAsk.k+1} sections</button><button class="btn sm" data-act="sec-tr-cancel">Cancel</button></div></div>`:''}
   <div class="opt"><span>Accidentals</span><span class="seg">${[['','Auto'],['b','♭'],['#','♯']].map(([v,l])=>`<button data-act="sec-ctr-sp" data-v="${v}" aria-pressed="${(view.ctrSp||'')===v}">${l}</button>`).join('')}</span></div>`:''}
   <div class="lbl">Copy &amp; transpose</div>
   <div class="row"><button class="btn sm" data-act="sec-ctr-open" aria-expanded="${!!view.ctrOpen}">${IC.copy}Copy &amp; transpose…</button></div>
