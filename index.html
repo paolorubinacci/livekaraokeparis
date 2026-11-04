@@ -79,37 +79,6 @@ footer{margin-top:32px;color:var(--muted);font-size:14px;text-align:center}
 .site{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.18);color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;letter-spacing:.02em;transition:color .2s,border-color .2s}.site:hover,.site:focus-visible{color:var(--ink,#fff);border-color:var(--spot)}.site i{font-style:normal;color:var(--spot)}
 footer .flink{color:inherit;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.2)}
 footer .sig{font-family:var(--script);color:var(--spot);font-size:1.6rem;display:block;margin-bottom:4px}
-
-/* request sheet: tap a song -> bottom sheet with name/group + Instagram, sent to the band's inbox (Formspree), plus Follow */
-li .ask{font-size:12px;font-weight:700;color:var(--deep);background:var(--spot);border-radius:999px;padding:3px 10px;white-space:nowrap;box-shadow:0 0 12px rgba(255,191,115,.35)}
-.sheetbg{position:fixed;inset:0;z-index:20;background:rgba(6,8,20,.72);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .2s}
-.sheetbg.on{opacity:1}
-.sheet{width:100%;max-width:560px;box-sizing:border-box;background:var(--deep);border:1px solid var(--line);border-bottom:0;border-radius:22px 22px 0 0;padding:10px 20px calc(22px + env(safe-area-inset-bottom,0px));max-height:92vh;overflow:auto;transform:translateY(30px);transition:transform .25s}
-.sheetbg.on .sheet{transform:none}
-.sheet .grab{width:40px;height:4px;border-radius:4px;background:var(--card);margin:0 auto 12px}
-.sheet .x{position:absolute;right:12px;top:8px;background:none;border:0;color:var(--muted);font-size:26px;padding:6px 10px;cursor:pointer}
-.sheet .sb{position:relative}
-.sheet h2{font-family:var(--head);font-size:1.25rem;margin:4px 34px 2px 0;line-height:1.2}
-.sheet .sa{color:var(--muted);margin:0 0 6px}
-.sheet .sl{display:inline-block;color:var(--lilac);font-size:13px;font-weight:700;text-decoration:none;margin-bottom:16px}
-.sheet label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin:12px 0 6px}
-.sheet .fld{position:relative}
-.sheet input{width:100%;box-sizing:border-box;background:var(--card);border:1.5px solid transparent;border-radius:14px;color:var(--ink);font:inherit;font-size:16px;padding:12px 14px;outline:none}
-.sheet input:focus{border-color:var(--lilac)}
-.sheet .at input{padding-left:32px}
-.sheet .at::before{content:"@";position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:700}
-.sheet .go{display:block;width:100%;margin-top:18px;background:var(--spot);color:var(--deep);border:0;border-radius:999px;font:inherit;font-weight:700;font-size:16px;padding:14px;cursor:pointer}
-.sheet .go:disabled{opacity:.6}
-.sheet .err{color:#ff9a9a;font-size:13px;margin:10px 0 0;min-height:1em}
-.sheet .done{text-align:center;padding:6px 0 4px}
-.sheet .done .big{font-size:40px;line-height:1}
-.sheet .done p{color:var(--muted);margin:8px 0 0}
-.follow{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;padding:12px;border-radius:999px;text-decoration:none;color:#fff;font-weight:700;font-size:15px;background:linear-gradient(90deg,#833ab4,#e1306c 55%,#f77737)}
-.follow svg{width:20px;height:20px}
-.follow span small{display:block;font-weight:400;font-size:12px;opacity:.85}
-.sheet .fwrap{border-top:1px solid var(--line);margin-top:18px;padding-top:2px}
-.sheet .fwrap p{color:var(--muted);font-size:13px;text-align:center;margin:12px 0 0}
-.sheet button:focus-visible,.sheet a:focus-visible{outline:2px solid var(--lilac);outline-offset:2px}
 </style>
 
 <div class="wrap">
@@ -145,21 +114,18 @@ li .ask{font-size:12px;font-weight:700;color:var(--deep);background:var(--spot);
   </footer>
 </div>
 
-<div class="sheetbg" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="shT"><div class="sheet"><div class="sb"><div class="grab"></div><button class="x" type="button" id="shX" aria-label="Fermer">×</button><div id="shBody"></div></div></div></div>
 <script>
 const T={
- fr:{intro:"Avec un vrai groupe live. <b>Touche une chanson pour la demander au groupe</b> et voir les paroles.",
+ fr:{intro:"Avec un vrai groupe live. Choisis ta chanson, puis <b>inscris-toi auprès du groupe</b>. Touche un titre pour voir les paroles.",
   search:"Titre ou artiste…",searchL:"Rechercher une chanson",clear:"Effacer",byTitle:"Par titre",byArtist:"Par artiste",all:"Tout",
   one:" chanson",many:" chansons",lyrics:"Paroles ↗",empty:"Aucune chanson trouvée. Demande au groupe !",sig:"à toi de chanter !",site:"Découvre aussi notre site <i>→</i>",
   trad:"Traditionnel",jazz:"Standard jazz",
-  ask:"Je chante",rq:{see:"Voir les paroles ↗",name:"Ton prénom, ou le nom du groupe si vous chantez à plusieurs",nameP:"Ex. Léa, ou « Les Copines de Léa »",ig:"Ton Instagram",igP:"ton.pseudo",send:"Demander cette chanson",sending:"Envoi…",errName:"Indique ton prénom ou le nom du groupe.",errIg:"Indique ton Instagram.",errNet:"Oups, l’envoi n’a pas marché. Réessaie, ou demande directement au groupe !",ok:"Demande envoyée !",okP:"Le groupe t’appellera sur scène. Prépare ta voix 🎤",follow:"Suis-nous sur Instagram",followS:"Photos et vidéos des soirées",followP:"Retrouve-toi dans les vidéos de la soirée !",close:"Fermer"},
   C:{sing:"Tout le monde chante !",now:"Hits actuels",classic:"Grands classiques",disney:"Disney & Comédies musicales",fr:"Français",it:"Italien",latin:"Latino",arab:"Arabe"},
   G:{pop:"Pop",rock:"Rock",soul:"Soul",disco:"Disco",funk:"Funk",jazz:"Jazz",dance:"Dance",blues:"Blues",country:"Country",reggae:"Reggae",folk:"Folk",disney:"Disney",musical:"Comédie musicale",fr:"Français",it:"Italien",latin:"Latino",arab:"Arabe"}},
- en:{intro:"With a real live band. <b>Tap a song to request it from the band</b> and see the lyrics.",
+ en:{intro:"With a real live band. Pick your song, then <b>sign up with the band</b>. Tap a title to see the lyrics.",
   search:"Title or artist…",searchL:"Search for a song",clear:"Clear",byTitle:"By title",byArtist:"By artist",all:"All",
   one:" song",many:" songs",lyrics:"Lyrics ↗",empty:"No song found. Ask the band!",sig:"your turn to sing!",site:"Visit our website <i>→</i>",
   trad:"Traditional",jazz:"Jazz standard",
-  ask:"I'll sing",rq:{see:"See the lyrics ↗",name:"Your first name, or your group's name if you're singing together",nameP:"E.g. Leah, or “Leah & friends”",ig:"Your Instagram",igP:"your.handle",send:"Request this song",sending:"Sending…",errName:"Please add your name or your group's name.",errIg:"Please add your Instagram.",errNet:"Oops, it didn't go through. Try again, or ask the band directly!",ok:"Request sent!",okP:"The band will call you on stage. Warm up that voice 🎤",follow:"Follow us on Instagram",followS:"Photos and videos from the nights",followP:"Find yourself in tonight's videos!",close:"Close"},
   C:{sing:"Singalong",now:"Today's hits",classic:"All-time classics",disney:"Disney & Musicals",fr:"French",it:"Italian",latin:"Latin",arab:"Arabic"},
   G:{pop:"Pop",rock:"Rock",soul:"Soul",disco:"Disco",funk:"Funk",jazz:"Jazz",dance:"Dance",blues:"Blues",country:"Country",reggae:"Reggae",folk:"Folk",disney:"Disney",musical:"Musical",fr:"French",it:"Italian",latin:"Latin",arab:"Arabic"}}
 };
@@ -459,49 +425,7 @@ clear.addEventListener("click",()=>{q.value="";q.focus();render()});
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 const tag=s=>s.g===genre?"":'<span class="tag">'+T[lang].G[s.g]+"</span>";
 const lyr=s=>"https://www.google.com/search?q="+encodeURIComponent(s.dt+" "+s.dr.replace(/^(Traditionnel|Standard jazz|Grease|High School Musical)$/,m=>m==="Traditionnel"?"":m==="Standard jazz"?"jazz standard":m)+(lang==="fr"&&s.tf?" paroles":" lyrics"));
-const row=(s,inner)=>'<li><a class="row" href="'+lyr(s)+'" data-i="'+songs.indexOf(s)+'" role="button">'+inner+'<span class="right">'+tag(s)+'<span class="ask">'+T[lang].ask+'</span></span></a></li>';
-
-/* ---- song requests: sent to the band's inbox through Formspree (same endpoint as livekaraokeparis.fr) ---- */
-const FORM_ENDPOINT="https://formspree.io/f/moevgzov"; /* fallback only */
-const REQ_URL=""; /* Google Apps Script web app of the "LKP Requests" sheet — read by the Host view in band.html */
-const IG_HANDLE="livekaraokeparis"; /* the new Instagram page — change here if the handle is different */
-const IG_URL="https://www.instagram.com/"+IG_HANDLE+"/";
-const IG_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>';
-const sheet=document.getElementById("sheet"),shBody=document.getElementById("shBody");
-let lastFocus=null,cur_=null;
-const followBtn=R=>'<a class="follow" href="'+IG_URL+'" target="_blank" rel="noopener">'+IG_SVG+'<span>'+R.follow+'<small>@'+IG_HANDLE+'</small></span></a>';
-function openSheet(s){
-  const R=T[lang].rq;cur_=s;lastFocus=document.activeElement;
-  let me={};try{me=JSON.parse(localStorage.getItem("lkp-me")||"{}")}catch(e){}
-  shBody.innerHTML='<h2 id="shT">'+esc(s.dt)+'</h2><p class="sa">'+esc(s.da)+'</p><a class="sl" href="'+lyr(s)+'" target="_blank" rel="noopener">'+R.see+'</a>'
-   +'<form id="rqF" novalidate><label for="rqN">'+R.name+'</label><div class="fld"><input id="rqN" name="name" autocomplete="name" maxlength="60" placeholder="'+R.nameP+'"></div>'
-   +'<label for="rqI">'+R.ig+'</label><div class="fld at"><input id="rqI" name="instagram" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="40" placeholder="'+R.igP+'"></div>'
-   +'<p class="err" id="rqE" aria-live="polite"></p><button class="go" type="submit">'+R.send+'</button></form>';
-  const N=document.getElementById("rqN"),I=document.getElementById("rqI");N.value=me.n||"";I.value=me.i||"";
-  document.getElementById("rqF").addEventListener("submit",send);
-  document.getElementById("shX").setAttribute("aria-label",R.close);
-  sheet.hidden=false;document.body.style.overflow="hidden";requestAnimationFrame(()=>sheet.classList.add("on"));
-}
-function closeSheet(){sheet.classList.remove("on");document.body.style.overflow="";setTimeout(()=>{sheet.hidden=true;shBody.innerHTML=""},200);if(lastFocus&&lastFocus.focus)lastFocus.focus()}
-async function send(e){
-  e.preventDefault();const R=T[lang].rq,E=document.getElementById("rqE"),B=e.target.querySelector(".go");
-  const n=document.getElementById("rqN").value.trim(),i=document.getElementById("rqI").value.trim().replace(/^@+/,"").replace(/^https?:\/\/(www\.)?instagram\.com\//i,"").replace(/[\/?].*$/,"");
-  if(!n){E.textContent=R.errName;document.getElementById("rqN").focus();return}
-  if(!i){E.textContent=R.errIg;document.getElementById("rqI").focus();return}
-  E.textContent="";B.disabled=true;B.textContent=R.sending;
-  const d=new FormData();const song=cur_.t+" — "+artistName(cur_.a);
-  d.append("_subject","🎤 Demande : "+song+" — "+n);d.append("Chanson",song);d.append("Nom / groupe",n);d.append("Instagram","@"+i+"  https://www.instagram.com/"+i+"/");d.append("Langue",lang);
-  let ok=false;
-  if(REQ_URL){try{const r=await fetch(REQ_URL,{method:"POST",body:JSON.stringify({song:cur_.t,artist:artistName(cur_.a),name:n,ig:i,lang})});ok=r.ok}catch(_){}}
-  else{try{const r=await fetch(FORM_ENDPOINT,{method:"POST",headers:{Accept:"application/json"},body:d});ok=r.ok}catch(_){}}
-  if(!ok){B.disabled=false;B.textContent=R.send;E.textContent=R.errNet;return}
-  save("lkp-me",JSON.stringify({n,i}));
-  shBody.innerHTML='<div class="done"><div class="big">🎉</div><h2 id="shT" style="margin:10px 0 0">'+R.ok+'</h2><p><b style="color:var(--ink)">'+esc(cur_.dt)+'</b> · '+esc(n)+'</p><p>'+R.okP+'</p></div><div class="fwrap"><p>'+R.followP+'</p>'+followBtn(R)+'</div>';
-}
-document.getElementById("list").addEventListener("click",e=>{const a=e.target.closest("a.row");if(!a)return;e.preventDefault();openSheet(songs[+a.dataset.i])});
-document.getElementById("shX").addEventListener("click",closeSheet);
-sheet.addEventListener("click",e=>{if(e.target===sheet)closeSheet()});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!sheet.hidden)closeSheet()});
+const row=(s,inner)=>'<li><a class="row" href="'+lyr(s)+'" target="_blank" rel="noopener">'+inner+'<span class="right">'+tag(s)+'<span class="lyr">'+T[lang].lyrics+'</span></span></a></li>';
 
 document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.l;save("lkp-lang",lang);render()}));
 function render(){
