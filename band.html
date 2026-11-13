@@ -1104,7 +1104,7 @@ document.addEventListener('keydown',e=>{if(e.target&&e.target.id==='q'&&e.key===
 
 /* loop songs: the whole chart is one short repeating section */
 function hasChart(s){try{return parseChart(s.chart||'').length>0}catch(e){return false}}
-function chordsUrl(s){const a=s.artist||'';return 'https://www.google.com/search?q='+encodeURIComponent('site:boiteachansons.net '+s.title+(/^(Standard jazz|Traditionnel|Traditional)$/.test(a)?'':' '+a))}
+function chordsUrl(s,w){const a=s.artist||'',q=s.title+(/^(Standard jazz|Traditionnel|Traditional)$/.test(a)?'':' '+a);return w==='ug'?'https://www.ultimate-guitar.com/search.php?search_type=title&value='+encodeURIComponent(q):'https://www.google.com/search?q='+encodeURIComponent('site:boiteachansons.net '+q)}
 function loopInfo(s){
   let secs;try{secs=parseChart(s.chart||'')}catch(e){return null}
   const withBars=secs.filter(x=>x.bars.some(b=>!isBlank(b)));if(withBars.length!==1)return null;
@@ -1175,7 +1175,7 @@ function renderSong(){
       </section>`;
     });
     if(view.chartEdit)body+=`<button class="addsec" data-act="sec-addend">+ Add section</button><button class="addsec" data-act="form-addnote">+ Add a note step (intro, solo, break, outro…)</button>`;
-    else if(!secs.length)body+=`<div class="emptybox"><div><b>Chart not available yet.</b><br>You can see the chords on La Boîte à chansons, where you can also transpose them to any key.</div><a class="btn pri" href="${chordsUrl(s)}" target="_blank" rel="noopener">${IC.ext}See the chords on La Boîte à chansons</a>${EDITOR?'<button class="btn" data-act="chart-edit">Build the chart</button>':''}</div>`;
+    else if(!secs.length)body+=`<div class="emptybox"><div><b>Chart not available yet.</b><br>See the chords on Ultimate Guitar or La Boîte à chansons. You can transpose them to any key there.</div><a class="btn pri" href="${chordsUrl(s,'ug')}" target="_blank" rel="noopener">${IC.ext}Ultimate Guitar</a><a class="btn pri" href="${chordsUrl(s)}" target="_blank" rel="noopener">${IC.ext}La Boîte à chansons</a>${EDITOR?'<button class="btn" data-act="chart-edit">Build the chart</button>':''}</div>`;
     if(s.notes)body+=`<div class="songnotes"><div class="lbl">Notes</div>${esc(s.notes)}</div>`;
   }else if(view.tab==='form'){
     const secs=parseChart(s.chart);
